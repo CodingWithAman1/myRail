@@ -489,8 +489,7 @@ header nav a {
     #home_nav a {
         font-size: 13px;
         padding: 10px 12px;
-        flex: none;
-        width: 100%;
+        width: 50%;
         min-width: unset;
     }
 
