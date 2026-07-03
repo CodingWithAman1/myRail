@@ -466,7 +466,8 @@ header nav a {
     }
 
     header img.logo {
-        height: 38px;
+        height: 100px;
+        margin-top: 15px;
     }
 
     #main_clock {
