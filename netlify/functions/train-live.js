@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 
 exports.handler = async (event, context) => {
   const trainNumber = event.queryStringParameters?.trainNumber;
-  const RAILRADAR_API_KEY = rg_d1719f6cd41c4dd78e036a653edd2ae2;
+  const RAILRADAR_API_KEY = process.env.RAILRADAR_API_KEY || "rg_d1719f6cd41c4dd78e036a653edd2ae2";
 
   if (!trainNumber) {
     return {
