@@ -1,0 +1,660 @@
+header {
+    background-color: #010a45;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+}
+
+main {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #766dcf;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+footer {
+    background-color: #010a45;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+}
+
+header img.logo {
+    height: 100px;
+    padding: 20px;
+}
+
+#home_nav {
+    display: flex;
+    gap: 20px;
+    align-self: center;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-right: 10px;
+    transition: 0.3s;
+}
+
+header nav a:hover {
+    background-color: white;
+    color: #010a45;
+    font-weight: bold;
+}
+
+#main_clock {
+    color: white;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+#banner {
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+#banner img.main-image {
+    width: 100%;
+    display: block;
+}
+
+#train_details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 40px auto;
+}
+
+#searchForm {
+    background: white;
+    width: 90%;
+    max-width: 700px;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+#searchForm label {
+    width: 100%;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #010a45;
+}
+
+#trainNumber {
+    flex: 1;
+    min-width: 250px;
+    padding: 14px 18px;
+    border: 2px solid #010a45;
+    border-radius: 8px;
+    font-size: 18px;
+    outline: none;
+    transition: 0.3s;
+}
+
+#trainNumber:focus {
+    border-color: #1f8ef1;
+    box-shadow: 0 0 8px rgba(31,142,241,0.4);
+}
+
+#submitBtn {
+    padding: 14px 28px;
+    background: #010a45;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#submitBtn:hover {
+    background: #0a2fa7;
+    transform: translateY(-2px);
+}
+
+#submitBtn:active {
+    transform: scale(0.97);
+}
+
+#trainResult {
+    width: 90%;
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    display: block;
+    overflow-x: auto;
+    animation: fadeIn 0.4s ease;
+}
+
+#trainResult h2 {
+    color: #010a45;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#trainResult p {
+    font-size: 17px;
+    margin: 10px 0;
+    color: #333;
+}
+
+#trainInfo {
+    position: relative;
+}
+
+.route-table-wrap {
+    position: relative;
+    max-height: 460px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.route-table-wrap table {
+    margin: 0;
+}
+
+#trainInfo table {
+    width: 100%;
+    border-collapse: collapse;
+    position: relative;
+    z-index: 1;
+}
+
+#trainInfo table th.track-heading,
+#trainInfo table td.track-cell {
+    width: 90px;
+    padding: 12px 0;
+    text-align: center;
+    border: none;
+    background: transparent;
+}
+
+#trainInfo table td.track-cell {
+    position: relative;
+}
+
+#trainInfo table td.track-cell::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #010a45;
+    transform: translateX(-50%);
+    z-index: 0;
+}
+
+#trainInfo table td.track-cell .track-dot {
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #010a45;
+    z-index: 1;
+}
+
+#trainInfo table td.track-cell .track-dot::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    background: #010a45;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+}
+
+#trainInfo table td.track-cell .track-dot-current {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    padding: 0px;
+    background: url("./resource/pin.png") no-repeat center center;
+    background-size: contain;
+    position: relative;
+    z-index: 2;
+    margin-top: 0;
+}
+
+.current-location {
+    position: sticky;
+    top: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.96);
+    z-index: 3;
+}
+
+.current-location td {
+    background: rgba(255,255,255,0.96);
+}
+
+.delay-cell {
+    background-color: rgba(255, 76, 76, 0.18);
+    color: #b70000;
+    font-weight: 600;
+}
+
+.ontime-cell {
+    background-color: rgba(82, 196, 26, 0.18);
+    color: #0f6600;
+    font-weight: 600;
+}
+
+tr.delayed td:nth-child(5),
+tr.delayed td:nth-child(6) {
+    background-color: rgba(255, 76, 76, 0.18);
+    color: #b70000;
+    font-weight: 600;
+}
+
+tr.on-time td:nth-child(5),
+tr.on-time td:nth-child(6) {
+    background-color: rgba(82, 196, 26, 0.18);
+    color: #0f6600;
+    font-weight: 600;
+}
+
+#trainResult strong {
+    color: #010a45;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid rgb(140,140,140);
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    margin-top: 20px;
+}
+
+caption {
+    caption-side: top;
+    font-size: 18px;
+    font-weight: bold;
+    color: #010a45;
+    padding: 10px;
+}
+
+thead {
+    background-color: rgb(228,240,245);
+}
+
+th,
+td {
+    border: 1px solid rgb(160,160,160);
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #010a45;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: rgb(237,238,242);
+}
+
+tbody tr:hover {
+    background-color: #dcecff;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#train_live {
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    text-align: center;
+}
+
+#train_live h2 {
+    color: #010a45;
+    margin-bottom: 10px;
+}
+
+#train_live > p {
+    color: #555;
+    margin-bottom: 25px;
+    font-size: 16px;
+}
+
+#trainLive {
+    margin: 25px;
+    padding: 20px;
+    background: #f8f9ff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-align: left;
+    animation: fadeIn 0.4s ease;
+}
+
+#trainLive h3 {
+    text-align: center;
+    color: #010a45;
+    margin-bottom: 15px;
+}
+
+#trainLive p {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+#trainLive strong {
+    color: #010a45;
+}
+
+/* Contact page styles */
+.contact-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.contact-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f3f6ff 100%);
+    border-radius: 12px;
+    padding: 32px;
+    width: 100%;
+    max-width: 720px;
+    box-shadow: 0 12px 30px rgba(3,18,70,0.12);
+    text-align: center;
+}
+
+.contact-card h1 {
+    margin: 0 0 12px 0;
+    color: #010a45;
+}
+
+.contact-card p {
+    color: #333;
+    line-height: 1.5;
+}
+
+.contact-actions {
+    margin-top: 18px;
+   
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    color: white;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover { transform: translateY(-2px); }
+
+.btn-github { background: #24292e; }
+.btn-email { background: #0f66ff; }
+.btn-phone { background: #0bb24b; }
+.btn-ntes {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+
+    background: linear-gradient(135deg, #ff6a00 0%, #ff8c1a 45%, #ffb347 100%);
+    color: #fff;
+
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    cursor: pointer;
+
+    box-shadow:
+        0 6px 18px rgba(255, 106, 0, 0.35),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        background .3s ease;
+}
+
+.btn-ntes:hover {
+    background: linear-gradient(135deg, #ff7b00 0%, #ff991f 45%, #ffc266 100%);
+    transform: translateY(-4px) scale(1.03);
+    box-shadow:
+        0 14px 30px rgba(255,106,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.btn-ntes:active {
+    transform: translateY(-1px) scale(0.98);
+    box-shadow:
+        0 6px 12px rgba(255,106,0,0.3);
+}
+
+.btn-ntes:focus-visible {
+    outline: 3px solid rgba(255,106,0,0.35);
+    outline-offset: 3px;
+}
+
+.small { margin-top: 14px; color: #666; font-size: 14px; }
+
+@media (max-width: 520px) {
+    .contact-card { padding: 20px; }
+    .btn { width: 100%; text-align: center; }
+}
+
+/* Trains page styles */
+.trains-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px 20px;
+}
+
+.trains-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f3f6ff 100%);
+    border-radius: 12px;
+    padding: 32px;
+    width: 100%;
+    max-width: 900px;
+    box-shadow: 0 12px 30px rgba(3,18,70,0.12);
+}
+
+.trains-card h1 {
+    margin: 0 0 24px 0;
+    color: #010a45;
+    text-align: center;
+}
+
+#trainSearchForm {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e0e6ff;
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #010a45;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+#fromStation,
+#toStation,
+#travelDate {
+    padding: 12px 14px;
+    border: 2px solid #e0e6ff;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    outline: none;
+    transition: 0.3s;
+}
+
+#fromStation:focus,
+#toStation:focus,
+#travelDate:focus {
+    border-color: #0f66ff;
+    box-shadow: 0 0 8px rgba(15, 102, 255, 0.3);
+}
+
+#searchTrainsBtn {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #0f66ff 0%, #0052cc 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    height: fit-content;
+    align-self: flex-end;
+}
+
+#searchTrainsBtn:hover {
+    background: linear-gradient(135deg, #1a73ff 0%, #0047b2 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(15, 102, 255, 0.3);
+}
+
+#searchTrainsBtn:active {
+    transform: scale(0.97);
+}
+
+#trainsResult {
+    margin-top: 30px;
+    animation: fadeIn 0.4s ease;
+    display: block;
+}
+
+#trainsResult p {
+    color: #555;
+    text-align: center;
+    font-size: 16px;
+}
+
+#trainsList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.route-info {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid #0f66ff;
+    text-align: center;
+}
+
+.route-info h2 {
+    margin: 0 0 10px 0;
+    color: #010a45;
+    font-size: 24px;
+}
+
+.route-info p {
+    margin: 0;
+    color: #555;
+    font-size: 16px;
+}
+
+.train-card {
+    background: white;
+    border: 1px solid #e0e6ff;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: 0.3s;
+}
+
+.train-card:hover {
+    box-shadow: 0 8px 20px rgba(15, 102, 255, 0.15);
+    transform: translateY(-4px);
+}
+
+.train-card h3 {
+    margin: 0 0 12px 0;
+    color: #010a45;
+    font-size: 18px;
+}
+
+.train-card p {
+    margin: 8px 0;
+    color: #333;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.train-card strong {
+    color: #010a45;
+}
+
+@media (max-width: 768px) {
+    .trains-card { padding: 20px; }
+    #trainSearchForm { flex-direction: column; }
+    .form-group { min-width: 100%; }
+    #searchTrainsBtn { width: 100%; }
+}

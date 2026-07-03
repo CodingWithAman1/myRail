@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyRail</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>   
+        <img src="./resource/logo.png" alt="MyRail Logo" class="logo" onclick="window.location.href='index.html'">
+        <DIV ID="main_clock">
+        <p style="margin-right: 20px;"> IST </p>
+        <div id="clock"> 00:00:00 AM</div>
+        </DIV>  
+        <nav id="home_nav">
+                <a href="index.html" >Home</a>
+                <a href="live.html">Live Status</a>
+                <a href="trains.html">Trains b/w Stations</a>
+               <a href="contact.html">Contact</a>
+               
+        </nav>
+        
+    </header>
+    <main>
+        <div id="train_live">
+                <h2>Live Train Status</h2>
+                <p>Enter the train number to get the live status of the train.</p>
+        <form id="searchForm">
+            <label for="trainNumber">Enter Train Number:</label>
+            <input type="text" id="trainNumber" name="trainNumber" placeholder="e.g., 12345" required>
+            <button type="submit" id="submitBtn">Get Train Details</button>
+        </form>
+        <div id="trainLive" aria-live="polite"></div>
+    </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 MyRail. All rights reserved. Made with love just to serve! ❤️</p>
+    </footer>
+    <script src="app2.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

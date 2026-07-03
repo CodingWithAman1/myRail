@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Trains - MyRail</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>   
+        <img src="./resource/logo.png" alt="MyRail Logo" class="logo" onclick="window.location.href='index.html'">
+        <DIV ID="main_clock">
+        <p style="margin-right: 20px;"> IST </p>
+        <div id="clock"> 00:00:00 AM</div>
+        </DIV>  
+        <nav id="home_nav">
+                <a href="index.html" >Home</a>
+                <a href="live.html">Live Status</a>
+               
+               <a href="trains.html">Trains b/w Stations</a>
+               <a href="contact.html">Contact</a>
+        </nav>
+        
+    </header>
+    <main>
+        <section class="trains-section">
+            <div class="trains-card">
+                <h1>Search Trains</h1>
+                <form id="trainSearchForm">
+                    <div class="form-group">
+                        <label for="fromStation">Departure Station (Name or Code):</label>
+                        <input type="text" id="fromStation" name="fromStation" placeholder="e.g., Ujjain Junction or UJN" list="stationList" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="toStation">Arrival Station (Name or Code):</label>
+                        <input type="text" id="toStation" name="toStation" placeholder="e.g., Indore or INDB" list="stationList" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="travelDate">Travel Date:</label>
+                        <input type="date" id="travelDate" name="travelDate" required>
+                    </div>
+                    <button type="submit" id="searchTrainsBtn">Search Trains</button>
+                </form>
+                <datalist id="stationList">
+                    <option value="Ujjain Junction (UJN)"></option>
+                    <option value="UJN"></option>
+                    <option value="Indore (INDB)"></option>
+                    <option value="INDB"></option>
+                    <option value="New Delhi (NDLS)"></option>
+                    <option value="NDLS"></option>
+                    <option value="Mumbai Central (CSTM)"></option>
+                    <option value="CSTM"></option>
+                    <option value="Bangalore (SBC)"></option>
+                    <option value="SBC"></option>
+                    <option value="Hyderabad (HYD)"></option>
+                    <option value="HYD"></option>
+                    <option value="Kolkata (KOAA)"></option>
+                    <option value="KOAA"></option>
+                    <option value="Chennai (MAS)"></option>
+                    <option value="MAS"></option>
+                    <option value="Jaipur (JP)"></option>
+                    <option value="JP"></option>
+                    <option value="Lucknow (LKO)"></option>
+                    <option value="LKO"></option>
+                    <option value="Kanpur (CNB)"></option>
+                    <option value="CNB"></option>
+                    <option value="Agra (AG)"></option>
+                    <option value="AG"></option>
+                    <option value="Pune (PUNE)"></option>
+                    <option value="PUNE"></option>
+                    <option value="Ahmedabad (ADI)"></option>
+                    <option value="ADI"></option>
+                    <option value="Surat (ST)"></option>
+                    <option value="ST"></option>
+                    <option value="Vadodara (BRC)"></option>
+                    <option value="BRC"></option>
+                </datalist>
+                <div id="trainsResult" aria-live="polite"></div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 MyRail. All rights reserved. Made with love just to serve! ❤️</p>
+    </footer>
+    <script src="app3.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
