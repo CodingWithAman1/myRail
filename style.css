@@ -331,6 +331,7 @@ header nav a {
 }
 
 #trainNumber,
+#startDate,
 #fromStation,
 #toStation,
 #travelDate {
@@ -342,8 +343,17 @@ header nav a {
     font-size: 1rem;
     outline: none;
     transition: 0.3s;
+    background: #fff;
+    color: #333;
 }
-
+#trainNumber:focus,
+#startDate:focus,
+#fromStation:focus,
+#toStation:focus,
+#travelDate:focus {
+    border-color: #1f8ef1;
+    box-shadow: 0 0 8px rgba(31,142,241,0.4);
+}
 #submitBtn,
 #searchTrainsBtn {
     width: 100%;
