@@ -2,8 +2,7 @@ const fetch = require("node-fetch");
 
 exports.handler = async (event, context) => {
   const trainNumber = event.queryStringParameters?.trainNumber;
-  const date = document.getElementById("startDate");
-  date.value = new Date().toISOString().split("T")[0];
+  const date = event.queryStringParameters?.date;
   const RAILRADAR_API_KEY = process.env.RAILRADAR_API_KEY || "rg_d1719f6cd41c4dd78e036a653edd2ae2";
   if(!date){
     return {
@@ -29,7 +28,7 @@ exports.handler = async (event, context) => {
     const encodedTrainNumber = encodeURIComponent(trainNumber);
     const encodedDate = encodeURIComponent(date);
     const url = `https://api.railradar.in/v1/trains/${encodedTrainNumber}/live?date=${encodedDate}`; // You can modify the date as needed
-
+    console.log(`Fetching live train data from: ${url}`); // Log the URL for debugging
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${RAILRADAR_API_KEY}`,
