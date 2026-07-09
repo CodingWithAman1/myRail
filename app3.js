@@ -1,43 +1,58 @@
 
 // Station database with codes
-const stationDatabase = {
-  "ujjain junction": "UJN",
-  "ujn": "UJN",
-  "ujjain": "UJN",
-  "indore junction": "INDB",
-  "indb": "INDB",
-  "indore": "INDB",
-  "delhi": "NDLS",
-  "new delhi": "NDLS",
-  "ndls": "NDLS",
-  "mumbai": "CSTM",
-  "mumbai central": "CSTM",
-  "cstm": "CSTM",
-  "bangalore": "SBC",
-  "bengaluru": "SBC",
-  "sbc": "SBC",
-  "hyderabad": "HYD",
-  "hyd": "HYD",
-  "kolkata": "KOAA",
-  "koaa": "KOAA",
-  "chennai": "MAS",
-  "mas": "MAS",
-  "jaipur": "JP",
-  "jp": "JP",
-  "lucknow": "LKO",
-  "lko": "LKO",
-  "kanpur": "CNB",
-  "cnb": "CNB",
-  "agra": "AG",
-  "ag": "AG",
-  "pune": "PUNE",
-  "ahmedabad": "ADI",
-  "adi": "ADI",
-  "surat": "ST",
-  "st": "ST",
-  "vadodara": "BRC",
-  "brc": "BRC"
-};
+let stationDatabase = {};
+
+// Load station database from JSON file
+async function loadStationDatabase() {
+  try {
+    const response = await fetch('/stationDatabase.json');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    stationDatabase = await response.json();
+    console.log('Station database loaded:', stationDatabase);
+    populateStationDatalist();
+  } catch (error) {
+    console.error('Failed to load station database:', error);
+  }
+}
+
+// Populate datalist with station options
+function populateStationDatalist() {
+  const stationList = document.getElementById('stationList');
+  if (!stationList) {
+    console.error('stationList datalist not found');
+    return;
+  }
+
+  // Clear existing options
+  stationList.innerHTML = '';
+
+  // Add options for each station in the database
+  // Database format is now: "CODE": "Station Name"
+  for (const [code, stationName] of Object.entries(stationDatabase)) {
+    // Add option with station name and code format
+    const option1 = document.createElement('option');
+    option1.value = `${stationName} (${code})`;
+    option1.textContent = `${stationName} (${code})`;
+    stationList.appendChild(option1);
+
+    // Add option with just the station code
+    const option2 = document.createElement('option');
+    option2.value = code;
+    option2.textContent = code;
+    stationList.appendChild(option2);
+  }
+  
+  console.log('Datalist populated with', stationList.children.length, 'options');
+}
+
+// Initialize database when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadStationDatabase);
+} else {
+  loadStationDatabase();
+}
 
 // Function to get station code from name or code
 function getStationCode(input) {
@@ -53,12 +68,22 @@ function getStationCode(input) {
   
   // If input is 3-4 characters, assume it's a station code
   if (trimmed.length <= 4 && /^[A-Z]{2,4}$/.test(trimmed)) {
-    return trimmed;
+    // Check if this code exists in the database
+    if (stationDatabase[trimmed]) {
+      return trimmed;
+    }
   }
   
-  // Otherwise, look it up in the database
-  const lowerInput = input.toLowerCase().trim();
-  return stationDatabase[lowerInput] || null;
+  // Otherwise, search for station name in the database (reverse lookup)
+  // Database format is now: "CODE": "Station Name"
+  const inputLower = input.toLowerCase().trim();
+  for (const [code, stationName] of Object.entries(stationDatabase)) {
+    if (stationName.toLowerCase().includes(inputLower)) {
+      return code;
+    }
+  }
+  
+  return null;
 }
 
 async function getTrainData(fromStation, toStation, date) {
@@ -147,16 +172,55 @@ function displayTrains(data) {
 }
 
 
-document.addEventListener("DOMContentLoaded", function() {
-  const form = document.getElementById("trainSearchForm");
-  if (form) {
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
-      const fromStation = document.getElementById("fromStation").value;
-      const toStation = document.getElementById("toStation").value;
-      const travelDate = document.getElementById("travelDate").value;
-      
-      getTrainData(fromStation, toStation, travelDate);
+document.addEventListener("DOMContentLoaded", function () {
+    loadStationDatabase();
+
+    const form = document.getElementById("trainSearchForm");
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        getTrainData(
+            document.getElementById("fromStation").value,
+            document.getElementById("toStation").value,
+            document.getElementById("travelDate").value
+        );
     });
-  }
+
+    document.getElementById("bookTrainsBtn").addEventListener("click", function () {
+        bookTrain(
+            document.getElementById("fromStation").value,
+            document.getElementById("toStation").value,
+            document.getElementById("travelDate").value
+        );
+    });
 });
+async function bookTrain(fromStation, toStation, date) {
+  const resultDiv = document.getElementById("trainsResult");
+  
+  if (!fromStation || !toStation || !date) {
+    resultDiv.innerHTML = '<p style="color: red;">Please fill in all fields.</p>';
+    return;
+  }
+
+  const fromCode = getStationCode(fromStation);
+  const toCode = getStationCode(toStation);
+  
+  if (!fromCode) {
+    resultDiv.innerHTML = `<p style="color: red;">Invalid departure station: "${fromStation}"</p>`;
+    return;
+  }
+  
+  if (!toCode) {
+    resultDiv.innerHTML = `<p style="color: red;">Invalid arrival station: "${toStation}"</p>`;
+    return;
+  }
+   const [year, month, day] = date.split("-");
+  const bookingDate = `${day}-${month}-${year}`;
+  resultDiv.innerHTML = '<p>Loading trains...</p>';
+ window.open(
+  `https://www.confirmtkt.com/rbooking/trains/from/${fromCode}/to/${toCode}/${bookingDate}`,
+  "_blank",
+  "noopener,noreferrer"
+);
+  getTrainData(fromStation, toStation, date);
+}
