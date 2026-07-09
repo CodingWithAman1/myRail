@@ -908,5 +908,5 @@ tbody tr:hover {
     .trains-card { padding: 20px; }
     #trainSearchForm { flex-direction: column; }
     .form-group { min-width: 100%; }
-    #searchTrainsBtn { width: 100%; }
+    #searchTrainsBtn,#bookTrainsBtn { width: 100%; }
 }
