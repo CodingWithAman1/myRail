@@ -2,8 +2,14 @@ const fetch = require("node-fetch");
 
 exports.handler = async (event, context) => {
   const trainNumber = event.queryStringParameters?.trainNumber;
+  const date = event.queryStringParameters?.date || new Date().toISOString().split("T")[0]; // Default to today's date if not provided
   const RAILRADAR_API_KEY = process.env.RAILRADAR_API_KEY || "rg_d1719f6cd41c4dd78e036a653edd2ae2";
-
+  if(!date){
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Date is invalid" }),
+    };
+  }
   if (!trainNumber) {
     return {
       statusCode: 400,
@@ -20,7 +26,8 @@ exports.handler = async (event, context) => {
 
   try {
     const encodedTrainNumber = encodeURIComponent(trainNumber);
-    const url = `https://api.railradar.in/v1/trains/${encodedTrainNumber}/live`;
+    const encodedDate = encodeURIComponent(date);
+    const url = `https://api.railradar.in/v1/trains/${encodedTrainNumber}/live?date=${encodedDate}`; // You can modify the date as needed
 
     const response = await fetch(url, {
       headers: {
