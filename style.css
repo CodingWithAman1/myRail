@@ -1,56 +1,51 @@
-* {
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
-    background-color: #766dcf;
-    color: #333;
-}
-
 header {
     background-color: #010a45;
     margin: 0;
-    padding: 20px 26px;
+    padding: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
     border-radius: 10px;
+}
+
+main {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #766dcf;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+footer {
+    background-color: #010a45;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
 }
 
 header img.logo {
     height: 100px;
-    max-height: 100px;
-    padding: 0;
-    flex: 0 0 auto;
+    padding: 20px;
 }
 
 #home_nav {
     display: flex;
-    gap: 14px;
-    align-items: center;
-    justify-content: center;
-    min-width: 260px;
+    gap: 20px;
+    align-self: center;
 }
 
 header nav a {
     color: white;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 18px;
     border: 1px solid white;
     border-radius: 5px;
-    padding: 12px 18px;
+    padding: 5px 10px;
+    margin-right: 10px;
     transition: 0.3s;
-    white-space: nowrap;
 }
 
 header nav a:hover {
@@ -62,29 +57,10 @@ header nav a:hover {
 #main_clock {
     color: white;
     font-family: "Courier New", Courier, monospace;
-    font-size: 1.35rem;
+    font-size: 1.5rem;
     display: flex;
     align-items: center;
-    margin: 0;
-    gap: 10px;
-    padding: 6px 10px;
-    flex: 0 0 auto;
-}
-
-main {
-    margin: 0;
-    padding: 20px 12px 40px;
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 122px);
-}
-
-footer {
-    background-color: #010a45;
-    color: white;
-    text-align: center;
-    padding: 10px 0;
-    width: 100%;
+    margin-right: 20px;
 }
 
 #banner {
@@ -282,229 +258,6 @@ footer {
 .current-location td {
     background: rgba(255,255,255,0.96);
 }
-
-/* Responsive adjustments */
-header nav a {
-    white-space: nowrap;
-}
-
-#banner img.main-image {
-    width: 100%;
-    max-height: 420px;
-    object-fit: cover;
-    display: block;
-}
-
-#train_details,
-#train_live,
-.trains-card {
-    width: 100%;
-    max-width: 960px;
-    margin: 0 auto;
-    margin-top: 20px;
-    padding: 0 10px;
-}
-
-#searchForm,
-#trainSearchForm {
-    background: white;
-    width: 100%;
-    max-width: 100%;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-}
-
-#searchForm label,
-#trainSearchForm label {
-    width: 100%;
-    text-align: left;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #010a45;
-}
-
-#trainNumber,
-#fromStation,
-#toStation,
-#travelDate {
-    width: 100%;
-    max-width: 100%;
-    padding: 14px 18px;
-    border: 2px solid #010a45;
-    border-radius: 8px;
-    font-size: 1rem;
-    outline: none;
-    transition: 0.3s;
-}
-
-#submitBtn,
-#searchTrainsBtn {
-    width: 100%;
-    max-width: 360px;
-    padding: 14px 18px;
-    background: #010a45;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-#submitBtn:hover,
-#searchTrainsBtn:hover {
-    background: #0a2fa7;
-    transform: translateY(-2px);
-}
-
-#trainResult,
-#trainsResult {
-    width: 100%;
-    margin: 30px auto;
-    padding: 25px;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    overflow-x: auto;
-}
-
-.route-table-wrap {
-    position: relative;
-    max-height: 460px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    border-radius: 12px;
-    margin-top: 20px;
-}
-
-#trainInfo table th.track-heading,
-#trainInfo table td.track-cell {
-    width: auto;
-    padding: 12px 8px;
-    text-align: center;
-}
-
-@media (max-width: 900px) {
-    header {
-        padding: 16px 16px;
-        gap: 12px;
-    }
-
-    header img.logo {
-        height: 80px;
-    }
-
-    #main_clock {
-        font-size: 1.15rem;
-        margin-right: 0;
-        justify-content: center;
-    }
-
-    header nav a {
-        font-size: 15px;
-        padding: 8px 12px;
-    }
-}
-
-@media (max-width: 700px) {
-    header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 12px 14px;
-        gap: 10px;
-    }
-
-    header img.logo {
-        align-self: center;
-        height: 70px;
-    }
-
-    #home_nav {
-        justify-content: center;
-        width: 100%;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    #home_nav a {
-        flex: 1 1 48%;
-        min-width: 130px;
-    }
-
-    #main_clock {
-        justify-content: center;
-        width: 100%;
-        padding: 6px 0;
-    }
-
-    #searchForm,
-    #trainSearchForm {
-        padding: 22px;
-    }
-
-    #searchForm label,
-    #trainSearchForm label {
-        font-size: 1rem;
-    }
-
-    #submitBtn,
-    #searchTrainsBtn {
-        max-width: 100%;
-    }
-}
-
-@media (max-width: 520px) {
-    header {
-        display: block;
-        padding: 8px 10px;
-        gap: 8px;
-    }
-
-    header img.logo {
-        height: 100px;
-        margin-top: 15px;
-    }
-
-    #main_clock {
-        font-size: 0.95rem;
-        width: 100%;
-        justify-content: center;
-        padding: 2px 0;
-        margin: 0;
-    }
-
-    #home_nav {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        justify-content: center;
-    }
-
-    #home_nav a {
-        font-size: 13px;
-        padding: 10px 12px;
-        width: 50%;
-        min-width: unset;
-    }
-
-    #trainResult,
-    #trainsResult {
-        padding: 18px;
-        margin: 20px auto;
-    }
-
-    .route-table-wrap {
-        max-height: none;
-    }
-}
-
 
 .delay-cell {
     background-color: rgba(255, 76, 76, 0.18);
@@ -784,7 +537,7 @@ tbody tr:hover {
     font-weight: 600;
     color: #010a45;
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 #fromStation,
@@ -806,7 +559,7 @@ tbody tr:hover {
     box-shadow: 0 0 8px rgba(15, 102, 255, 0.3);
 }
 
-#searchTrainsBtn {
+#searchTrainsBtn,#bookTrainsBtn {
     padding: 12px 28px;
     background: linear-gradient(135deg, #0f66ff 0%, #0052cc 100%);
     color: white;
@@ -819,14 +572,18 @@ tbody tr:hover {
     height: fit-content;
     align-self: flex-end;
 }
-
-#searchTrainsBtn:hover {
+#bookTrainsBtn {
+    background: linear-gradient(135deg, #ff6a00 0%, #ff8c1a 100%);
+    width: 100%;
+    display: block;
+}
+#searchTrainsBtn:hover,#bookTrainsBtn:hover {
     background: linear-gradient(135deg, #1a73ff 0%, #0047b2 100%);
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(15, 102, 255, 0.3);
 }
 
-#searchTrainsBtn:active {
+#searchTrainsBtn:active,#bookTrainsBtn:active {
     transform: scale(0.97);
 }
 
