@@ -736,6 +736,24 @@ tbody tr:hover {
 @media (max-width: 520px) {
     .contact-card { padding: 20px; }
     .btn { width: 100%; text-align: center; }
+     #trainLive {
+        margin: 10px;
+        padding: 12px;
+        border-radius: 6px;
+    }
+
+    #trainLive h3 {
+        font-size: 18px;
+    }
+
+    #trainLive p {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    #trainLive strong {
+        font-size: 13px;
+    }
 }
 
 /* Trains page styles */
@@ -909,4 +927,25 @@ tbody tr:hover {
     #trainSearchForm { flex-direction: column; }
     .form-group { min-width: 100%; }
     #searchTrainsBtn,#bookTrainsBtn { width: 100%; }
+     #trainLive {
+        margin: 15px;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    #trainLive h3 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+
+    #trainLive p {
+        font-size: 14px;
+        margin: 6px 0;
+        line-height: 1.5;
+        word-wrap: break-word;
+    }
+
+    #trainLive strong {
+        font-size: 14px;
+    }
 }
