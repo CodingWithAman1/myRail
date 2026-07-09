@@ -784,7 +784,7 @@ tbody tr:hover {
     font-weight: 600;
     color: #010a45;
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 #fromStation,
@@ -806,7 +806,7 @@ tbody tr:hover {
     box-shadow: 0 0 8px rgba(15, 102, 255, 0.3);
 }
 
-#searchTrainsBtn {
+#searchTrainsBtn,#bookTrainsBtn {
     padding: 12px 28px;
     background: linear-gradient(135deg, #0f66ff 0%, #0052cc 100%);
     color: white;
@@ -819,16 +819,21 @@ tbody tr:hover {
     height: fit-content;
     align-self: flex-end;
 }
-
-#searchTrainsBtn:hover {
+#bookTrainsBtn {
+    background: linear-gradient(135deg, #ff6a00 0%, #ff8c1a 100%);
+    width: 100%;
+    display: block;
+}
+#searchTrainsBtn:hover,#bookTrainsBtn:hover {
     background: linear-gradient(135deg, #1a73ff 0%, #0047b2 100%);
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(15, 102, 255, 0.3);
 }
 
-#searchTrainsBtn:active {
+#searchTrainsBtn:active,#bookTrainsBtn:active {
     transform: scale(0.97);
 }
+
 
 #trainsResult {
     margin-top: 30px;
