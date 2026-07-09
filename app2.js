@@ -1,11 +1,12 @@
 async function getTrainLive(trainNumber) {
     if (!trainNumber) {
         const el = document.getElementById("trainNumber");
+        const date = document.getElementById("startDate").value;
         trainNumber = el ? el.value.trim() : "12919";
     }
 
     try {
-        const response = await fetch(`/.netlify/functions/train-live?trainNumber=${trainNumber}`);
+        const response = await fetch(`/.netlify/functions/train-live?trainNumber=${trainNumber}&date=${date}`);
 
         if (!response.ok) {
             throw new Error(`Server returned ${response.status}`);
