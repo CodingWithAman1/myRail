@@ -195,13 +195,15 @@ footer {
     position: relative;
     max-height: 460px;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
     border-radius: 12px;
     margin-top: 20px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .route-table-wrap table {
     margin: 0;
+    min-width: 900px;
 }
 
 #trainInfo table {
@@ -947,5 +949,53 @@ tbody tr:hover {
 
     #trainLive strong {
         font-size: 14px;
+    }
+}
+@media (max-width: 768px) {
+
+    #trainLive {
+        margin: 10px;
+        padding: 12px;
+    }
+
+    #trainLive h3 {
+        font-size: 22px;
+    }
+
+    #trainLive p {
+        font-size: 14px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .route-table-wrap {
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 420px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .route-table-wrap table {
+        min-width: 900px;
+    }
+
+    #trainInfo table {
+        font-size: 13px;
+    }
+
+    #trainInfo th,
+    #trainInfo td {
+        padding: 8px 10px;
+        white-space: nowrap;
+    }
+
+    #trainInfo table th.track-heading,
+    #trainInfo table td.track-cell {
+        width: 70px;
+    }
+
+    #trainInfo table td.track-cell .track-dot-current {
+        width: 36px;
+        height: 36px;
     }
 }
