@@ -7,38 +7,65 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>   
+    <header>
         <img src="./resource/logo.png" alt="MyRail Logo" class="logo" onclick="window.location.href='index.html'">
-        <DIV ID="main_clock">
-        <p style="margin-right: 20px;"> IST </p>
-        <div id="clock"> 00:00:00 AM</div>
-        </DIV>  
+
+        <div id="main_clock">
+            <p style="margin-right:20px;">IST</p>
+            <div id="clock">00:00:00 AM</div>
+        </div>
+
         <nav id="home_nav">
-                <a href="index.html" >Home</a>
-                <a href="live.html">Live Status</a>
-                <a href="trains.html">Trains b/w Stations</a>
-               <a href="contact.html">Contact</a>
-               
+            <a href="index.html">Home</a>
+            <a href="live.html">Live Status</a>
+            <a href="trains.html">Trains b/w Stations</a>
+            <a href="contact.html">Contact</a>
         </nav>
-        
     </header>
+
     <main>
         <div id="train_live">
-                <h2>Live Train Status</h2>
-                <p>Enter the train number to get the live status of the train.</p>
-        <form id="searchForm">
-            <label for="trainNumber">Enter Train Number:</label>
-            <input type="text" id="trainNumber" name="trainNumber" placeholder="e.g., 12345" required>
-            <label for="startDate">Journey Date:</label>
-            <input type="date" id="startDate" name="startDate" required>
-            <button type="submit" id="submitBtn">Get Train Details</button>
-        </form>
-        <div id="trainLive" aria-live="polite"></div>
-    </div>
+            <h2>Live Train Status</h2>
+            <p>Enter the train number to get the live status of the train.</p>
+
+            <form id="searchForm">
+                <label for="trainNumber">Train Number</label>
+                <input
+                    type="text"
+                    id="trainNumber"
+                    name="trainNumber"
+                    placeholder="e.g. 12345"
+                    maxlength="5"
+                    pattern="[0-9]{5}"
+                    required
+                >
+
+                <label for="startDate">Journey Date</label>
+                <input
+                    type="date"
+                    id="startDate"
+                    name="startDate"
+                    required
+                >
+
+                <button type="submit" id="submitBtn">
+                    Get Train Details
+                </button>
+            </form>
+
+            <div id="trainLive" aria-live="polite"></div>
+        </div>
     </main>
+
     <footer>
-        <p>&copy; 2026 MyRail. All rights reserved. Made with love just to serve! ❤️</p>
+        <p>&copy; 2026 MyRail. All rights reserved. Made with ❤️ just to serve!</p>
     </footer>
+
+    <script>
+        document.getElementById("startDate").value =
+            new Date().toISOString().split("T")[0];
+    </script>
+
     <script src="app2.js"></script>
     <script src="script.js"></script>
 </body>
