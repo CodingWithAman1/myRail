@@ -156,6 +156,58 @@ async function handleTrainLive(req, res) {
 
   try {
     const data = await fetchRailRadar(endpoint);
+
+    // Enrich with station coordinates & coach position from train schedule
+    try {
+      let scheduleData = getCached(`train_info_${trainNumber}`);
+      if (!scheduleData) {
+        scheduleData = await fetchRailRadar(`trains/${encodeURIComponent(trainNumber)}?haltsOnly=true`);
+        setCached(`train_info_${trainNumber}`, scheduleData, 900);
+      }
+
+      if (scheduleData?.data) {
+        if (!data.data.coachPosition && scheduleData.data.train?.coachPosition) {
+          data.data.coachPosition = scheduleData.data.train.coachPosition;
+        }
+        if (!data.data.classes && scheduleData.data.train?.classes) {
+          data.data.classes = scheduleData.data.train.classes;
+        }
+
+        const coordsMap = new Map();
+        (scheduleData.data.route || []).forEach(st => {
+          if (st.station?.code && st.station?.lat && st.station?.lng) {
+            coordsMap.set(st.station.code, {
+              lat: st.station.lat,
+              lng: st.station.lng,
+              name: st.station.name,
+              platform: st.platform
+            });
+          }
+        });
+
+        if (data.data.route) {
+          data.data.route.forEach(st => {
+            const c = coordsMap.get(st.stationCode);
+            if (c) {
+              st.lat = c.lat;
+              st.lng = c.lng;
+              if (!st.platform && c.platform) st.platform = c.platform;
+            }
+          });
+        }
+
+        if (data.data.currentLocation) {
+          const cur = coordsMap.get(data.data.currentLocation.stationCode);
+          if (cur) {
+            data.data.currentLocation.lat = cur.lat;
+            data.data.currentLocation.lng = cur.lng;
+          }
+        }
+      }
+    } catch (enrichErr) {
+      console.warn(`[MyRail API] Could not enrich coordinates:`, enrichErr.message);
+    }
+
     setCached(cacheKey, data, 45); // 45 seconds cache for live status
     res.json(data);
   } catch (error) {

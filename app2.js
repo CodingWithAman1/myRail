@@ -1,10 +1,15 @@
-// ==========================================
-// MyRail - Dedicated Live Tracking Logic (app2.js)
-// ==========================================
+// ========================================================
+// MyRail - Dedicated Live Tracking & Map Engine (app2.js)
+// Interactive Leaflet Map + SVG Train Marker + SVG Coaches
+// ========================================================
 
 let autoRefreshTimer = null;
 let currentTrainNumber = "";
 let currentStartDate = "";
+let liveMapInstance = null;
+let trainMarkerInstance = null;
+let routePolylines = [];
+let stationMarkers = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -44,6 +49,12 @@ async function loadLiveTrainStatus(trainNumber, date) {
   const resultContainer = document.getElementById("trainLive");
   if (!resultContainer) return;
 
+  // Clean previous map instance if any
+  if (liveMapInstance) {
+    liveMapInstance.remove();
+    liveMapInstance = null;
+  }
+
   resultContainer.innerHTML = `
     <div class="spinner-wrap">
       <div class="railway-spinner"></div>
@@ -66,10 +77,10 @@ async function loadLiveTrainStatus(trainNumber, date) {
     startAutoRefresh();
   } catch (err) {
     resultContainer.innerHTML = `
-      <div style="background:#ffffff; border-radius:var(--radius-lg); border:1px solid #fecaca; padding:28px; text-align:center;">
+      <div style="background:#ffffff; border-radius:var(--radius-lg); border:1px solid #fecaca; padding:32px; text-align:center;">
         <div style="font-size:2.5rem; margin-bottom:12px;">⚠️</div>
-        <h3 style="font-family:'Outfit'; font-size:1.3rem; color:#b91c1c; margin-bottom:8px;">Live Tracking Unavailable</h3>
-        <p style="color:var(--text-muted); max-width:540px; margin:0 auto 16px;">
+        <h3 style="font-family:'Outfit'; font-size:1.35rem; color:#b91c1c; margin-bottom:8px;">Live Tracking Unavailable</h3>
+        <p style="color:var(--text-muted); max-width:540px; margin:0 auto 18px;">
           ${err.message || 'Train may not be scheduled to run today, or real-time GPS feed is temporarily offline.'}
         </p>
         <a href="schedule.html?trainNumber=${encodeURIComponent(trainNumber)}" class="btn-primary" style="display:inline-flex; width:auto;">
@@ -95,11 +106,11 @@ function renderLiveTrainDashboard(liveData) {
 
   // Format Status String
   let statusBadgeClass = isDelayed ? "delayed" : "on-time";
-  let statusText = isDelayed ? `⚠️ Delayed by ${delayMinutes} mins` : `✓ Running Right Time`;
+  let statusText = isDelayed ? `⚠️ Late by ${delayMinutes} mins` : `✓ Running Right Time`;
 
   if (liveData.status === "arrived") {
     statusBadgeClass = "on-time";
-    statusText = "🏁 Journey Completed (Arrived)";
+    statusText = "🏁 Arrived at Destination";
   }
 
   // Format Last Updated Time
@@ -113,16 +124,22 @@ function renderLiveTrainDashboard(liveData) {
     }
   }
 
-  // Check for Exceptions (Diversions, etc.)
-  let exceptionBanner = "";
-  if (liveData.exceptions && liveData.exceptions.length > 0) {
-    exceptionBanner = `
-      <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:var(--radius-md); padding:14px 18px; margin-bottom:20px; display:flex; align-items:center; gap:12px; color:#92400e;">
-        <span style="font-size:1.4rem;">⚠️</span>
-        <div>
-          <strong>Special Advisory:</strong>
-          <p style="margin:2px 0 0; font-size:0.88rem;">${liveData.exceptions.map(e => e.message || e.type).join("; ")}</p>
+  // SVG Coaches Rake
+  const coachRakeString = liveData.coachPosition || train.coachPosition || "ENG-GEN-H1-A1-B1-PC-S1-SLRD";
+  let coachesRakeHtml = "";
+  if (window.CoachSVGs) {
+    coachesRakeHtml = `
+      <div style="background:#ffffff; border-radius:var(--radius-lg); border:1px solid var(--border-light); padding:24px; box-shadow:var(--shadow-sm); margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+          <div>
+            <h3 style="font-family:'Outfit'; font-size:1.25rem; margin:0;">🚆 Train Coach Composition (Live Rake Position)</h3>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0;">Interactive SVG Rake from Locomotive to Rear Guard Coach. Click any coach to inspect details.</p>
+          </div>
+          <span style="font-size:0.75rem; background:#eff6ff; color:var(--railway-blue); font-weight:700; padding:4px 10px; border-radius:var(--radius-full);">
+            Scroll ➔ to view full rake
+          </span>
         </div>
+        ${window.CoachSVGs.renderRake(coachRakeString)}
       </div>
     `;
   }
@@ -154,8 +171,6 @@ function renderLiveTrainDashboard(liveData) {
           </div>
         </div>
       </div>
-
-      ${exceptionBanner}
 
       <!-- Current Location Spotlight -->
       <div class="live-current-card">
@@ -204,11 +219,40 @@ function renderLiveTrainDashboard(liveData) {
       </div>
     </div>
 
+    <!-- Interactive Route Map Card (Present Stage with SVG Train) -->
+    <div class="map-card-wrapper">
+      <div class="map-header-bar">
+        <div>
+          <h3 style="font-family:'Outfit'; font-size:1.35rem; margin:0; display:flex; align-items:center; gap:8px;">
+            <span>🗺️ Live Route Map & Present Train Location</span>
+          </h3>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin:3px 0 0;">
+            Real-time GPS track with animated SVG Train marker stationed at current stage.
+          </p>
+        </div>
+
+        <div class="map-controls-group">
+          <button type="button" class="btn-card-action" onclick="centerOnTrainMarker()">
+            <span>🎯 Recenter on Train</span>
+          </button>
+          <button type="button" class="btn-card-action" onclick="fitFullRouteMap()">
+            <span>🔍 Fit Full Route</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Leaflet Map Container -->
+      <div id="liveTrainMap"></div>
+    </div>
+
+    <!-- SVG Coaches Rake Visualization -->
+    ${coachesRakeHtml}
+
     <!-- Vertical Timeline Route Tracker -->
     <div class="timeline-track-wrap">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
         <h3 style="font-family:'Outfit'; font-size:1.25rem;">Live Route Station Timetable (${route.length} Stations)</h3>
-        <span style="font-size:0.82rem; color:var(--text-muted);">🟢 Green: Passed • 📍 Radar: Current • ⚪ Ahead</span>
+        <span style="font-size:0.82rem; color:var(--text-muted);">🟢 Passed • 📍 Present Stage • ⚪ Ahead</span>
       </div>
 
       <div class="timeline-station-list">
@@ -260,7 +304,257 @@ function renderLiveTrainDashboard(liveData) {
       </div>
     </div>
   `;
+
+  // Initialize the Leaflet Map after DOM injection
+  setTimeout(() => {
+    initLeafletTrainMap(liveData);
+  }, 100);
 }
+
+// ========================================================
+// Leaflet Map Initialization & Custom SVG Train Marker
+// ========================================================
+function initLeafletTrainMap(liveData) {
+  const mapEl = document.getElementById("liveTrainMap");
+  if (!mapEl || typeof L === "undefined") return;
+
+  const route = liveData.route || [];
+  const currentLoc = liveData.currentLocation || {};
+  const trainNumber = liveData.trainNumber;
+  const trainName = liveData.trainName || "Express";
+  const delayMinutes = liveData.delayMinutes || 0;
+
+  // Collect stations with valid lat/lng
+  const stationsWithCoords = route.filter(s => s.lat != null && s.lng != null);
+
+  // Fallback default coordinates (India center) if no stations have coords
+  let defaultCenter = [22.9734, 78.6569];
+  let defaultZoom = 6;
+
+  if (stationsWithCoords.length > 0) {
+    defaultCenter = [stationsWithCoords[0].lat, stationsWithCoords[0].lng];
+  }
+
+  // Create Map instance
+  liveMapInstance = L.map("liveTrainMap", {
+    center: defaultCenter,
+    zoom: defaultZoom,
+    zoomControl: true,
+  });
+
+  // Sleek CartoDB Voyager Tile Layer
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: "abcd",
+    maxZoom: 19,
+  }).addTo(liveMapInstance);
+
+  if (stationsWithCoords.length === 0) {
+    // Add banner on map if coordinates unavailable
+    const infoControl = L.control({ position: "topright" });
+    infoControl.onAdd = function() {
+      const div = L.DomUtil.create("div", "leaflet-bar");
+      div.style.background = "#fff";
+      div.style.padding = "8px 12px";
+      div.style.fontSize = "12px";
+      div.innerHTML = "GPS track nodes loading...";
+      return div;
+    };
+    infoControl.addTo(liveMapInstance);
+    return;
+  }
+
+  // Identify Current Location Coordinates
+  let trainLat = currentLoc.lat;
+  let trainLng = currentLoc.lng;
+
+  // If current location does not have exact lat/lng, find nearest station in route
+  if (trainLat == null || trainLng == null) {
+    const curIdx = route.findIndex(s => s.stationCode === currentLoc.stationCode);
+    if (curIdx >= 0 && route[curIdx].lat != null) {
+      trainLat = route[curIdx].lat;
+      trainLng = route[curIdx].lng;
+    } else {
+      // Find the last passed station that has coordinates
+      for (let i = route.length - 1; i >= 0; i--) {
+        if (route[i].status === "departed" && route[i].lat != null) {
+          trainLat = route[i].lat;
+          trainLng = route[i].lng;
+          break;
+        }
+      }
+      // If still null, fallback to first coordinate
+      if (trainLat == null && stationsWithCoords.length > 0) {
+        trainLat = stationsWithCoords[0].lat;
+        trainLng = stationsWithCoords[0].lng;
+      }
+    }
+  }
+
+  // Polyline coordinates for traveled track vs upcoming track
+  const passedCoords = [];
+  const upcomingCoords = [];
+  let passedCurrent = false;
+
+  stationsWithCoords.forEach((st) => {
+    const latLng = [st.lat, st.lng];
+    if (st.status === "departed") {
+      passedCoords.push(latLng);
+    } else {
+      if (!passedCurrent && passedCoords.length > 0) {
+        // connect gap
+        upcomingCoords.push(passedCoords[passedCoords.length - 1]);
+        passedCurrent = true;
+      }
+      upcomingCoords.push(latLng);
+    }
+
+    // Add station circle pin
+    const isStationPassed = st.status === "departed";
+    const stIcon = L.divIcon({
+      className: "custom-station-pin",
+      html: `<div class="station-marker-circle ${isStationPassed ? 'passed' : ''}" title="${st.stationName} (${st.stationCode})"></div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7]
+    });
+
+    const marker = L.marker(latLng, { icon: stIcon }).addTo(liveMapInstance);
+    marker.bindTooltip(`<strong>${st.stationName}</strong> (${st.stationCode})<br>Platform: ${st.platform || '1'}`, {
+      direction: "top",
+      offset: [0, -6]
+    });
+    stationMarkers.push(marker);
+  });
+
+  // Render Polylines
+  if (passedCoords.length > 1) {
+    const passedLine = L.polyline(passedCoords, {
+      color: "#10b981", // vibrant emerald
+      weight: 5,
+      opacity: 0.85,
+    }).addTo(liveMapInstance);
+    routePolylines.push(passedLine);
+  }
+
+  if (upcomingCoords.length > 1) {
+    const upcomingLine = L.polyline(upcomingCoords, {
+      color: "#1d4ed8", // railway blue
+      weight: 4,
+      dashArray: "6, 8",
+      opacity: 0.75,
+    }).addTo(liveMapInstance);
+    routePolylines.push(upcomingLine);
+  }
+
+  // ========================================================
+  // Custom SVG Train Marker positioned at Present Stage!
+  // ========================================================
+  if (trainLat != null && trainLng != null) {
+    const isLate = delayMinutes > 0;
+    const delayChipText = isLate ? `Late ${delayMinutes}m` : "On Time";
+
+    // Detailed SVG Locomotive Icon pointing directly at present stage
+    const trainIconHtml = `
+      <div class="train-map-marker-wrap">
+        <div class="radar-pulse-ring" style="${isLate ? 'border-color:#ef4444; background:rgba(239,68,68,0.2);' : ''}"></div>
+        <div class="radar-pulse-ring-outer" style="${isLate ? 'border-color:#ef4444;' : ''}"></div>
+        
+        <div class="train-marker-body">
+          <svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+            <!-- Front Light Glow Beam -->
+            <polygon points="22,12 8,0 36,0" fill="rgba(254, 240, 138, 0.45)"/>
+            
+            <!-- Train Drop Shadow -->
+            <ellipse cx="22" cy="24" rx="14" ry="14" fill="rgba(0,0,0,0.3)"/>
+
+            <!-- Locomotive Body (WAP-7 Crimson Red) -->
+            <rect x="12" y="8" width="20" height="28" rx="8" fill="#b91c1c" stroke="#facc15" stroke-width="2"/>
+            
+            <!-- Windshield Glass -->
+            <path d="M 15 12 Q 22 9 29 12 L 29 17 Q 22 14 15 17 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="0.8"/>
+            
+            <!-- High Beam Dual Headlights -->
+            <circle cx="17" cy="10.5" r="2.2" fill="#fef08a" stroke="#ca8a04" stroke-width="0.8"/>
+            <circle cx="27" cy="10.5" r="2.2" fill="#fef08a" stroke="#ca8a04" stroke-width="0.8"/>
+            <circle cx="17" cy="10.5" r="1" fill="#ffffff"/>
+            <circle cx="27" cy="10.5" r="1" fill="#ffffff"/>
+
+            <!-- Roof Electric Pantograph Unit -->
+            <rect x="18" y="22" width="8" height="5" rx="1.5" fill="#475569" stroke="#cbd5e1" stroke-width="0.8"/>
+            <line x1="16" y1="24.5" x2="28" y2="24.5" stroke="#f1f5f9" stroke-width="1.2"/>
+
+            <!-- Rear Red Marker Light -->
+            <circle cx="22" cy="33" r="1.8" fill="#ef4444"/>
+          </svg>
+        </div>
+
+        <div class="train-marker-chip">
+          🚆 ${trainNumber} • ${delayChipText}
+        </div>
+      </div>
+    `;
+
+    const trainSvgIcon = L.divIcon({
+      className: "train-live-svg-icon-container",
+      html: trainIconHtml,
+      iconSize: [52, 52],
+      iconAnchor: [26, 26],
+      popupAnchor: [0, -28]
+    });
+
+    trainMarkerInstance = L.marker([trainLat, trainLng], {
+      icon: trainSvgIcon,
+      zIndexOffset: 1000
+    }).addTo(liveMapInstance);
+
+    const popupContent = `
+      <div style="font-family:'Inter',sans-serif; padding:4px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+          <span style="background:#09142e; color:#38bdf8; font-family:'JetBrains Mono'; font-weight:700; padding:2px 6px; border-radius:4px; font-size:11px;">${trainNumber}</span>
+          <strong style="font-family:'Outfit'; font-size:14px;">${trainName}</strong>
+        </div>
+        <div style="font-size:12px; color:#475569; margin-bottom:4px;">
+          Present Location: <strong>${currentLoc.stationName || 'En Route'} (${currentLoc.stationCode || ''})</strong>
+        </div>
+        <div style="font-size:11px; color:#64748b;">
+          Platform: <strong>${currentLoc.platform || 'TBD'}</strong> • Status: <strong>${(currentLoc.status || 'Running').toUpperCase()}</strong>
+        </div>
+        <div style="margin-top:6px; font-size:11px; font-weight:700; color:${isLate ? '#b91c1c' : '#15803d'};">
+          ${isLate ? `⚠️ Delayed by ${delayMinutes} minutes` : '✓ Running Right Time'}
+        </div>
+      </div>
+    `;
+
+    trainMarkerInstance.bindPopup(popupContent).openPopup();
+
+    // Center map on the train
+    liveMapInstance.setView([trainLat, trainLng], 9);
+  } else {
+    fitFullRouteMap();
+  }
+}
+
+// Map Controls: Center on Train
+window.centerOnTrainMarker = function() {
+  if (liveMapInstance && trainMarkerInstance) {
+    const latLng = trainMarkerInstance.getLatLng();
+    liveMapInstance.flyTo(latLng, 10, { duration: 1.2 });
+    trainMarkerInstance.openPopup();
+  }
+};
+
+// Map Controls: Fit Full Route
+window.fitFullRouteMap = function() {
+  if (!liveMapInstance) return;
+  const allCoords = [];
+  stationMarkers.forEach(m => allCoords.push(m.getLatLng()));
+  if (trainMarkerInstance) allCoords.push(trainMarkerInstance.getLatLng());
+
+  if (allCoords.length > 0) {
+    const bounds = L.latLngBounds(allCoords);
+    liveMapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
+  }
+};
 
 function startAutoRefresh() {
   if (autoRefreshTimer) clearInterval(autoRefreshTimer);

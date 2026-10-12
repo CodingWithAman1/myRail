@@ -90,6 +90,7 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="coaches.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -146,41 +147,19 @@
       const coaches = coachString.split("-").filter(Boolean);
 
       let coachBoxesHtml = "";
-      if (coaches.length > 0) {
+      if (window.CoachSVGs && coachString) {
         coachBoxesHtml = `
-          <div class="coach-section">
-            <h3 style="font-family:'Outfit'; font-size:1.2rem; margin-bottom:4px;">🚆 Train Coach Composition (Rake Position)</h3>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">Arrangement from Locomotive to Rear End:</p>
-            <div class="coach-train-wrapper">
-              ${coaches.map(c => {
-                let cls = "general";
-                let desc = "General";
-                if (c === "ENG") { cls = "engine"; desc = "Locomotive"; }
-                else if (c.startsWith("H")) { cls = "ac1"; desc = "1st AC"; }
-                else if (c.startsWith("A")) { cls = "ac2"; desc = "2nd AC"; }
-                else if (c.startsWith("B")) { cls = "ac3"; desc = "3rd AC"; }
-                else if (c.startsWith("M")) { cls = "ac3"; desc = "3E Economy"; }
-                else if (c.startsWith("S") && !c.includes("LRD")) { cls = "sleeper"; desc = "Sleeper"; }
-                else if (c === "PC") { cls = "pantry"; desc = "Pantry Car"; }
-                else if (c.includes("LPR") || c.includes("SLRD")) { cls = "general"; desc = "Luggage/Guard"; }
-
-                return `
-                  <div class="coach-box ${cls}" title="${c}: ${desc}">
-                    <span>${c}</span>
-                  </div>
-                `;
-              }).join('')}
+          <div style="background:#ffffff; border-radius:var(--radius-lg); border:1px solid var(--border-light); padding:24px; box-shadow:var(--shadow-sm); margin-bottom:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+              <div>
+                <h3 style="font-family:'Outfit'; font-size:1.25rem; margin:0;">🚆 Train Coach Composition (Rake Position)</h3>
+                <p style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0;">Interactive SVG Rake from Locomotive to Rear Guard Coach. Click any coach to inspect amenities & details.</p>
+              </div>
+              <span style="font-size:0.75rem; background:#eff6ff; color:var(--railway-blue); font-weight:700; padding:4px 10px; border-radius:var(--radius-full);">
+                Scroll ➔ to view full rake
+              </span>
             </div>
-
-            <div class="coach-legend">
-              <div class="legend-item"><div class="legend-color-box" style="background:#ef4444;"></div> Engine</div>
-              <div class="legend-item"><div class="legend-color-box" style="background:#fef3c7; border:1px solid #fde68a;"></div> 1A First AC</div>
-              <div class="legend-item"><div class="legend-color-box" style="background:#dbeafe; border:1px solid #bfdbfe;"></div> 2A Second AC</div>
-              <div class="legend-item"><div class="legend-color-box" style="background:#e0f2fe; border:1px solid #bae6fd;"></div> 3A Third AC</div>
-              <div class="legend-item"><div class="legend-color-box" style="background:#f0fdf4; border:1px solid #bbf7d0;"></div> SL Sleeper</div>
-              <div class="legend-item"><div class="legend-color-box" style="background:#fdf2f8; border:1px solid #fbcfe8;"></div> PC Pantry</div>
-              <div class="legend-item"><div class="legend-color-box" style="background:#f1f5f9; border:1px solid #cbd5e1;"></div> General / Guard</div>
-            </div>
+            ${window.CoachSVGs.renderRake(coachString)}
           </div>
         `;
       }
