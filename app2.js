@@ -78,7 +78,7 @@ async function loadLiveTrainStatus(trainNumber, date) {
     resultContainer.innerHTML = `
       <div style="background:#ffffff; border-radius:var(--radius-lg); border:1px solid #fecaca; padding:32px; text-align:center;">
         <div style="font-size:2.5rem; margin-bottom:12px;">⚠️</div>
-        <h3 style="font-family:'Outfit'; font-size:1.35rem; color:#b91c1c; margin-bottom:8px;">Live Tracking Unavailable</h3>
+        <h2 style="font-family:'Outfit'; font-size:1.35rem; color:#b91c1c; margin-bottom:8px;">Live Tracking Unavailable</h2>
         <p style="color:var(--text-muted); max-width:540px; margin:0 auto 18px;">
           ${err.message || 'Train may not be scheduled to run today, or real-time GPS feed is temporarily offline.'}
         </p>

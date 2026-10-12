@@ -1237,6 +1237,7 @@ main {
   margin-bottom: 16px;
 }
 
+.feature-card h2,
 .feature-card h3 {
   font-family: 'Outfit', sans-serif;
   font-size: 1.15rem;

@@ -140,7 +140,7 @@ async function fetchTrainsBetween(fromCode, toCode, date) {
   } catch (err) {
     resultsDiv.innerHTML = `
       <div style="background:#ffffff; border-radius:var(--radius-lg); border:1px solid #fecaca; padding:32px; text-align:center;">
-        <h3 style="font-family:'Outfit'; font-size:1.3rem; color:#b91c1c; margin-bottom:8px;">No Trains Found</h3>
+        <h2 style="font-family:'Outfit'; font-size:1.3rem; color:#b91c1c; margin-bottom:8px;">No Trains Found</h2>
         <p style="color:var(--text-muted);">${err.message}</p>
       </div>
     `;
@@ -193,7 +193,7 @@ function renderTrainCards(trains) {
   if (!trains.length) {
     container.innerHTML = `
       <div style="background:#ffffff; padding:32px; border-radius:var(--radius-lg); text-align:center; border:1px solid var(--border-light);">
-        <h4 style="font-family:'Outfit'; font-size:1.2rem; margin-bottom:6px;">No trains match selected filters</h4>
+        <h2 style="font-family:'Outfit'; font-size:1.2rem; margin-bottom:6px;">No trains match selected filters</h2>
         <p style="color:var(--text-muted);">Try choosing "All Train Types".</p>
       </div>
     `;

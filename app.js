@@ -232,7 +232,7 @@ function renderTrainsBetweenResults(data, date) {
   if (!trains.length) {
     container.innerHTML = `
       <div style="background:#ffffff; padding:36px; border-radius:var(--radius-lg); text-align:center; border:1px solid var(--border-light);">
-        <h3 style="font-family:'Outfit'; font-size:1.3rem; margin-bottom:8px;">No Direct Trains Found</h3>
+        <h2 style="font-family:'Outfit'; font-size:1.3rem; margin-bottom:8px;">No Direct Trains Found</h2>
         <p style="color:var(--text-muted);">No scheduled trains found between ${from.name} (${from.code}) and ${to.name} (${to.code}) on this date.</p>
       </div>
     `;
