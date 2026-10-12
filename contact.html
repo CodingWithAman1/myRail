@@ -1,48 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyRail</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support & Railway Helplines - MyRail</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="./resource/logo.png">
 </head>
 <body>
-    <header>   
-        <img src="./resource/logo.png" alt="MyRail Logo" class="logo" onclick="window.location.href='index.html'">
-        <DIV ID="main_clock">
-        <p style="margin-right: 20px;"> IST </p>
-        <div id="clock"> 00:00:00 AM</div>
-        </DIV>  
-        <nav id="home_nav">
-                <a href="index.html" >Home</a>
-                <a href="live.html">Live Status</a>
-               
-               <a href="trains.html">Trains</a>
-               <a href="contact.html">Contact</a>
-        </nav>
-        
-    </header>
-    <main>
-        <section class="contact-section">
-            <div class="contact-card">
-                <h1>Contact</h1>
-                <p>This is just a project to test my knowledge for actual train information. Click on the button below.</p>
-                <button class="btn-ntes" onclick="window.open('https://enquiry.indianrail.gov.in/ntes/', '_blank')">
-    <span>🚆</span>
-    <span>Open NTES</span>
-</button>
-                <p class="small">Or reach out for collaboration and feedback</p>
-                <div class="contact-actions">
-                    <a class="btn btn-github" href="https://github.com/CodingWithAman1" target="_blank" rel="noopener">View on GitHub</a>
-                    <a class="btn btn-email" href="mailto:shruti.sharma6386@gmail.com" target="_blank" rel="noopener">Email Me - shruti.sharma6386@gmail.com</a>
-                    <a class="btn btn-phone" href="tel:+919690683156" target="_blank" rel="noopener">Call: +91 96906 83156</a>
-                </div>
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo-container">
+      <img src="./resource/logo.png" alt="MyRail Logo" class="logo">
+      <div class="brand-text">
+        <div class="brand-title">My<span>Rail</span></div>
+        <div class="brand-subtitle">Indian Railway Portal</div>
+      </div>
+    </a>
 
-                
-            </div>
-        </section>
-    </main>
-    <script src="app2.js"></script>
-    <script src="script.js"></script>
+    <div id="main_clock">
+      <span class="live-pulse-dot"></span>
+      <span>IST:</span>
+      <div id="clock">--:--:--</div>
+    </div>
+
+    <nav id="home_nav">
+      <a href="index.html">🏠 Home</a>
+      <a href="live.html">🔴 Live Status</a>
+      <a href="trains.html">🔄 Trains b/w Stations</a>
+      <a href="schedule.html">📋 Schedule & Coach</a>
+      <a href="contact.html" class="active">📞 Support & NTES</a>
+    </nav>
+
+    <button class="nav-toggle-btn" id="navToggle" aria-label="Toggle Navigation">☰</button>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div style="margin-bottom:28px;">
+      <h1 style="font-family:'Outfit'; font-size:2.2rem; font-weight:800; margin-bottom:8px;">
+        Railway Helplines & Passenger Support
+      </h1>
+      <p style="color:var(--text-muted); font-size:1.05rem;">
+        Essential Indian Railways official emergency helplines, official portals, and project contact information.
+      </p>
+    </div>
+
+    <!-- Official Helpline Numbers Grid -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:32px;">
+      <div class="feature-card" style="border-top:4px solid var(--railway-blue);">
+        <div class="feature-icon-box">📞</div>
+        <h3>139 - Rail Madad Helpline</h3>
+        <p>Integrated All-in-One Railway Helpline for train enquiry, PNR status, medical emergency, cleanliness, and passenger assistance.</p>
+        <a href="tel:139" class="btn-primary" style="margin-top:16px; padding:10px 16px; font-size:0.9rem;">
+          Call 139 (Toll Free)
+        </a>
+      </div>
+
+      <div class="feature-card" style="border-top:4px solid var(--danger-rose);">
+        <div class="feature-icon-box" style="background:#fee2e2; color:#dc2626;">🛡️</div>
+        <h3>182 - Railway Police (RPF)</h3>
+        <p>24x7 Security and Emergency Helpline for passenger safety, female passenger assistance, and theft prevention onboard trains.</p>
+        <a href="tel:182" class="btn-secondary" style="margin-top:16px; padding:10px 16px; font-size:0.9rem;">
+          Call 182 (Security)
+        </a>
+      </div>
+
+      <div class="feature-card" style="border-top:4px solid var(--success-emerald);">
+        <div class="feature-icon-box" style="background:#dcfce7; color:#15803d;">🌐</div>
+        <h3>NTES National Portal</h3>
+        <p>Official National Train Enquiry System website for direct IRCTC railway network verification and train running announcements.</p>
+        <a href="https://enquiry.indianrail.gov.in/ntes/" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="margin-top:16px; padding:10px 16px; font-size:0.9rem;">
+          Open NTES Portal ➔
+        </a>
+      </div>
+    </div>
+
+    <!-- Developer Profile & Feedback Card Grid -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:32px;">
+      <!-- Developer Card -->
+      <div style="background:#ffffff; border-radius:var(--radius-lg); border:1px solid var(--border-light); padding:28px; box-shadow:var(--shadow-sm);">
+        <span style="font-size:0.75rem; color:var(--railway-blue); text-transform:uppercase; font-weight:700; letter-spacing:0.5px;">PROJECT DEVELOPER</span>
+        <h2 style="font-family:'Outfit'; font-size:1.6rem; margin:6px 0 12px;">Aman Sharma</h2>
+        <p style="color:var(--text-muted); font-size:0.92rem; margin-bottom:20px; line-height:1.6;">
+          Full Stack Developer passionate about high-reliability web tools, APIs, and modern passenger experiences. Built MyRail using Express, RailRadar Real-time API, and modern responsive design.
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a class="btn-secondary" href="https://github.com/CodingWithAman1" target="_blank" rel="noopener noreferrer" style="justify-content:center;">
+            <span>💻 GitHub: @CodingWithAman1</span>
+          </a>
+          <a class="btn-secondary" href="mailto:shruti.sharma6386@gmail.com" style="justify-content:center;">
+            <span>✉️ Email: shruti.sharma6386@gmail.com</span>
+          </a>
+          <a class="btn-secondary" href="tel:+919690683156" style="justify-content:center;">
+            <span>📱 Mobile: +91 96906 83156</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Feedback Form -->
+      <div style="background:#ffffff; border-radius:var(--radius-lg); border:1px solid var(--border-light); padding:28px; box-shadow:var(--shadow-sm);">
+        <h3 style="font-family:'Outfit'; font-size:1.4rem; margin-bottom:8px;">Send Feedback & Suggestions</h3>
+        <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:18px;">
+          Have ideas for new features, bug reports, or feature enhancements? Let us know!
+        </p>
+
+        <form id="feedbackForm" onsubmit="submitFeedback(event)">
+          <div class="input-field-group" style="margin-bottom:12px;">
+            <label for="fbName">Your Name:</label>
+            <input type="text" id="fbName" class="custom-input" placeholder="e.g. Aman" required style="padding-left:14px;">
+          </div>
+
+          <div class="input-field-group" style="margin-bottom:12px;">
+            <label for="fbEmail">Your Email:</label>
+            <input type="email" id="fbEmail" class="custom-input" placeholder="e.g. name@example.com" required style="padding-left:14px;">
+          </div>
+
+          <div class="input-field-group" style="margin-bottom:16px;">
+            <label for="fbMsg">Message / Feedback:</label>
+            <textarea id="fbMsg" class="custom-input" rows="3" placeholder="Tell us how we can improve MyRail..." required style="padding-left:14px; resize:vertical;"></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <span>Submit Feedback</span>
+          </button>
+        </form>
+
+        <div id="fbSuccess" style="display:none; background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; padding:14px; border-radius:var(--radius-md); margin-top:16px; text-align:center;">
+          ✓ Thank you! Your feedback has been received.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p>&copy; 2026 <strong>MyRail</strong>. Developed with ❤️ by <strong>CodingWithAman1</strong>.</p>
+        <p style="font-size:0.78rem; color:#64748b; margin-top:4px;">Official Indian Railway portal & helpline directory.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="live.html">Live Status</a>
+        <a href="trains.html">Trains</a>
+        <a href="schedule.html">Timetable</a>
+        <a href="contact.html">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    function submitFeedback(e) {
+      e.preventDefault();
+      document.getElementById("feedbackForm").style.display = "none";
+      document.getElementById("fbSuccess").style.display = "block";
+      showToast("Thank you for your feedback!", "success");
+    }
+  </script>
 </body>
 </html>

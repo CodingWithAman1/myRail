@@ -1,89 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Trains - MyRail</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trains Between Stations - MyRail</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="./resource/logo.png">
 </head>
 <body>
-    <header>   
-        <img src="./resource/logo.png" alt="MyRail Logo" class="logo" onclick="window.location.href='index.html'">
-        <DIV ID="main_clock">
-        <p style="margin-right: 20px;"> IST </p>
-        <div id="clock"> 00:00:00 AM</div>
-        </DIV>  
-        <nav id="home_nav">
-                <a href="index.html" >Home</a>
-                <a href="live.html">Live Status</a>
-               
-               <a href="trains.html">Trains b/w Stations</a>
-               <a href="contact.html">Contact</a>
-        </nav>
-        
-    </header>
-    <main>
-        <section class="trains-section">
-            <div class="trains-card">
-                <h1>Search Trains</h1>
-                <form id="trainSearchForm">
-                    <div class="form-group">
-                        <label for="fromStation">Departure Station (Name or Code):</label>
-                        <input type="text" id="fromStation" name="fromStation" placeholder="e.g., Ujjain Junction or UJN" list="stationList" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="toStation">Arrival Station (Name or Code):</label>
-                        <input type="text" id="toStation" name="toStation" placeholder="e.g., Indore or INDB" list="stationList" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="travelDate">Travel Date:</label>
-                        <input type="date" id="travelDate" name="travelDate" required>
-                    </div>
-                    <button type="submit" id="searchTrainsBtn">Search Trains</button>
-                    <button type="button" id="bookTrainsBtn">Book Trains</button>
-                </form>
-                <datalist id="stationList">
-                    <option value="Ujjain Junction (UJN)"></option>
-                    <option value="UJN"></option>
-                    <option value="Indore (INDB)"></option>
-                    <option value="INDB"></option>
-                    <option value="New Delhi (NDLS)"></option>
-                    <option value="NDLS"></option>
-                    <option value="Mumbai Central (CSTM)"></option>
-                    <option value="CSTM"></option>
-                    <option value="Bangalore (SBC)"></option>
-                    <option value="SBC"></option>
-                    <option value="Hyderabad (HYD)"></option>
-                    <option value="HYD"></option>
-                    <option value="Kolkata (KOAA)"></option>
-                    <option value="KOAA"></option>
-                    <option value="Chennai (MAS)"></option>
-                    <option value="MAS"></option>
-                    <option value="Jaipur (JP)"></option>
-                    <option value="JP"></option>
-                    <option value="Lucknow (LKO)"></option>
-                    <option value="LKO"></option>
-                    <option value="Kanpur (CNB)"></option>
-                    <option value="CNB"></option>
-                    <option value="Agra (AG)"></option>
-                    <option value="AG"></option>
-                    <option value="Pune (PUNE)"></option>
-                    <option value="PUNE"></option>
-                    <option value="Ahmedabad (ADI)"></option>
-                    <option value="ADI"></option>
-                    <option value="Surat (ST)"></option>
-                    <option value="ST"></option>
-                    <option value="Vadodara (BRC)"></option>
-                    <option value="BRC"></option>
-                </datalist>
-                <div id="trainsResult" aria-live="polite"></div>
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo-container">
+      <img src="./resource/logo.png" alt="MyRail Logo" class="logo">
+      <div class="brand-text">
+        <div class="brand-title">My<span>Rail</span></div>
+        <div class="brand-subtitle">Indian Railway Portal</div>
+      </div>
+    </a>
+
+    <div id="main_clock">
+      <span class="live-pulse-dot"></span>
+      <span>IST:</span>
+      <div id="clock">--:--:--</div>
+    </div>
+
+    <nav id="home_nav">
+      <a href="index.html">🏠 Home</a>
+      <a href="live.html">🔴 Live Status</a>
+      <a href="trains.html" class="active">🔄 Trains b/w Stations</a>
+      <a href="schedule.html">📋 Schedule & Coach</a>
+      <a href="contact.html">📞 Support & NTES</a>
+    </nav>
+
+    <button class="nav-toggle-btn" id="navToggle" aria-label="Toggle Navigation">☰</button>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div style="margin-bottom:28px;">
+      <h1 style="font-family:'Outfit'; font-size:2.2rem; font-weight:800; margin-bottom:8px;">
+        Find Trains Between Stations
+      </h1>
+      <p style="color:var(--text-muted); font-size:1.05rem;">
+        Search all direct Indian Railway trains, compare schedules, journey durations, halts, and book tickets.
+      </p>
+    </div>
+
+    <!-- Search Card -->
+    <div class="search-hub-card" style="margin-bottom:28px;">
+      <div style="padding:24px 28px;">
+        <form id="trainSearchForm">
+          <div class="search-form-grid">
+            <!-- From Station -->
+            <div class="input-field-group">
+              <label for="fromStation">Departure Station (From):</label>
+              <div class="input-with-icon">
+                <span class="field-icon">🚉</span>
+                <input type="text" id="fromStation" class="custom-input" placeholder="e.g. Ujjain Junction or UJN" required>
+              </div>
             </div>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 MyRail. All rights reserved. Made with love just to serve! ❤️</p>
-    </footer>
-    <script src="app3.js"></script>
-    <script src="script.js"></script>
+
+            <!-- Swap Button -->
+            <div class="swap-btn-wrap">
+              <button type="button" class="btn-swap" id="swapStationsBtn" title="Swap Stations">⇄</button>
+            </div>
+
+            <!-- To Station -->
+            <div class="input-field-group">
+              <label for="toStation">Arrival Station (To):</label>
+              <div class="input-with-icon">
+                <span class="field-icon">📍</span>
+                <input type="text" id="toStation" class="custom-input" placeholder="e.g. Indore or INDB" required>
+              </div>
+            </div>
+
+            <!-- Travel Date -->
+            <div class="input-field-group">
+              <label for="travelDate">Travel Date:</label>
+              <div class="input-with-icon">
+                <span class="field-icon">📅</span>
+                <input type="date" id="travelDate" class="custom-input" style="padding-left:38px;" required>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="submit-btn-wrap">
+              <button type="submit" class="btn-primary" id="searchTrainsBtn">
+                <span>Find Trains</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Date Quick Select -->
+          <div class="quick-date-chips">
+            <span style="font-size:0.78rem; color:var(--text-muted); align-self:center;">Quick Select:</span>
+            <button type="button" class="date-chip active" data-days="0">Today</button>
+            <button type="button" class="date-chip" data-days="1">Tomorrow</button>
+            <button type="button" class="date-chip" data-days="2">Day After</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Filter & Sort Bar -->
+    <div id="filterSection" style="display:none; background:#ffffff; border-radius:var(--radius-md); border:1px solid var(--border-light); padding:14px 20px; margin-bottom:20px; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <label for="filterTrainType" style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Filter Type:</label>
+        <select id="filterTrainType" class="custom-input" style="width:auto; padding:8px 14px; font-size:0.85rem;">
+          <option value="all">All Train Types</option>
+          <option value="superfast">Superfast Express</option>
+          <option value="express">Mail / Express</option>
+          <option value="premium">Premium (Vande Bharat / Rajdhani / Shatabdi)</option>
+        </select>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <label for="sortTrainsBy" style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Sort By:</label>
+        <select id="sortTrainsBy" class="custom-input" style="width:auto; padding:8px 14px; font-size:0.85rem;">
+          <option value="duration">Fastest Duration</option>
+          <option value="departure_asc">Earliest Departure</option>
+          <option value="departure_desc">Latest Departure</option>
+          <option value="halts">Fewest Halts</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Results Area -->
+    <div id="trainsResult" aria-live="polite"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p>&copy; 2026 <strong>MyRail</strong>. Developed with ❤️ by <strong>CodingWithAman1</strong>.</p>
+        <p style="font-size:0.78rem; color:#64748b; margin-top:4px;">Official Indian Railway timetable data & real-time schedules.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="live.html">Live Status</a>
+        <a href="trains.html">Trains b/w Stations</a>
+        <a href="schedule.html">Timetable</a>
+        <a href="contact.html">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="app3.js"></script>
 </body>
 </html>

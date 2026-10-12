@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Train Schedule & Coach Position - MyRail</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="./resource/logo.png">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo-container">
+      <img src="./resource/logo.png" alt="MyRail Logo" class="logo">
+      <div class="brand-text">
+        <div class="brand-title">My<span>Rail</span></div>
+        <div class="brand-subtitle">Indian Railway Portal</div>
+      </div>
+    </a>
+
+    <div id="main_clock">
+      <span class="live-pulse-dot"></span>
+      <span>IST:</span>
+      <div id="clock">--:--:--</div>
+    </div>
+
+    <nav id="home_nav">
+      <a href="index.html">🏠 Home</a>
+      <a href="live.html">🔴 Live Status</a>
+      <a href="trains.html">🔄 Trains b/w Stations</a>
+      <a href="schedule.html" class="active">📋 Schedule & Coach</a>
+      <a href="contact.html">📞 Support & NTES</a>
+    </nav>
+
+    <button class="nav-toggle-btn" id="navToggle" aria-label="Toggle Navigation">☰</button>
+  </header>
+
+  <main>
+    <div style="margin-bottom:28px;">
+      <h1 style="font-family:'Outfit'; font-size:2.2rem; font-weight:800; margin-bottom:8px;">
+        Train Schedule, Timetable & Coach Position
+      </h1>
+      <p style="color:var(--text-muted); font-size:1.05rem;">
+        Check complete station-by-station halt timetable, speeds, reversal points, and visual rake coach composition.
+      </p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="search-hub-card" style="margin-bottom:28px;">
+      <div style="padding:24px 28px;">
+        <form id="scheduleForm" style="display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap;">
+          <div class="input-field-group" style="flex:1; min-width:260px;">
+            <label for="schedTrainNumber">Enter Train Number or Name:</label>
+            <div class="input-with-icon">
+              <span class="field-icon">🚆</span>
+              <input type="text" id="schedTrainNumber" class="custom-input" placeholder="e.g. 12919 or 22436" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" style="width:auto; padding:13px 28px;">
+            <span>Get Timetable & Coach Layout</span>
+          </button>
+        </form>
+
+        <div class="popular-chips-bar" style="margin-top:16px; padding-top:14px;">
+          <span class="chips-label">Popular Trains:</span>
+          <span class="train-chip" onclick="quickLoadTrain('12919')">🚆 12919 Malwa SF</span>
+          <span class="train-chip" onclick="quickLoadTrain('22436')">🚆 22436 Vande Bharat</span>
+          <span class="train-chip" onclick="quickLoadTrain('12301')">🚆 12301 Rajdhani Exp</span>
+          <span class="train-chip" onclick="quickLoadTrain('12004')">🚆 12004 Shatabdi Exp</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Output Container -->
+    <div id="scheduleResultArea" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p>&copy; 2026 <strong>MyRail</strong>. Built with ❤️ by <strong>CodingWithAman1</strong>.</p>
+        <p style="font-size:0.78rem; color:#64748b; margin-top:4px;">Real-time RailRadar GPS integration & Indian Railway data enquiry.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="live.html">Live Status</a>
+        <a href="trains.html">Trains</a>
+        <a href="contact.html">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const train = urlParams.get("trainNumber");
+      if (train) {
+        document.getElementById("schedTrainNumber").value = train;
+        fetchSchedule(train);
+      }
+
+      document.getElementById("scheduleForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const tn = document.getElementById("schedTrainNumber").value.trim();
+        if (tn) fetchSchedule(tn);
+      });
+    });
+
+    window.quickLoadTrain = function(tn) {
+      document.getElementById("schedTrainNumber").value = tn;
+      fetchSchedule(tn);
+    };
+
+    async function fetchSchedule(trainNumber) {
+      const area = document.getElementById("scheduleResultArea");
+      area.innerHTML = `
+        <div class="spinner-wrap">
+          <div class="railway-spinner"></div>
+          <p style="font-weight:600; color:var(--text-muted); margin-top:12px;">Loading official timetable for Train ${trainNumber}...</p>
+        </div>
+      `;
+      area.scrollIntoView({ behavior: "smooth" });
+
+      try {
+        const res = await fetch(`/api/train/${encodeURIComponent(trainNumber)}`);
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || "Train not found");
+
+        renderScheduleDashboard(data.data);
+      } catch (err) {
+        area.innerHTML = `
+          <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:var(--radius-lg); padding:28px; text-align:center;">
+            <h3 style="font-family:'Outfit'; font-size:1.3rem; color:#b91c1c; margin-bottom:8px;">Schedule Unavailable</h3>
+            <p style="color:var(--text-muted);">${err.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderScheduleDashboard(data) {
+      const train = data.train || {};
+      const route = data.route || [];
+      const area = document.getElementById("scheduleResultArea");
+
+      const coachString = train.coachPosition || "";
+      const coaches = coachString.split("-").filter(Boolean);
+
+      let coachBoxesHtml = "";
+      if (coaches.length > 0) {
+        coachBoxesHtml = `
+          <div class="coach-section">
+            <h3 style="font-family:'Outfit'; font-size:1.2rem; margin-bottom:4px;">🚆 Train Coach Composition (Rake Position)</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">Arrangement from Locomotive to Rear End:</p>
+            <div class="coach-train-wrapper">
+              ${coaches.map(c => {
+                let cls = "general";
+                let desc = "General";
+                if (c === "ENG") { cls = "engine"; desc = "Locomotive"; }
+                else if (c.startsWith("H")) { cls = "ac1"; desc = "1st AC"; }
+                else if (c.startsWith("A")) { cls = "ac2"; desc = "2nd AC"; }
+                else if (c.startsWith("B")) { cls = "ac3"; desc = "3rd AC"; }
+                else if (c.startsWith("M")) { cls = "ac3"; desc = "3E Economy"; }
+                else if (c.startsWith("S") && !c.includes("LRD")) { cls = "sleeper"; desc = "Sleeper"; }
+                else if (c === "PC") { cls = "pantry"; desc = "Pantry Car"; }
+                else if (c.includes("LPR") || c.includes("SLRD")) { cls = "general"; desc = "Luggage/Guard"; }
+
+                return `
+                  <div class="coach-box ${cls}" title="${c}: ${desc}">
+                    <span>${c}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="coach-legend">
+              <div class="legend-item"><div class="legend-color-box" style="background:#ef4444;"></div> Engine</div>
+              <div class="legend-item"><div class="legend-color-box" style="background:#fef3c7; border:1px solid #fde68a;"></div> 1A First AC</div>
+              <div class="legend-item"><div class="legend-color-box" style="background:#dbeafe; border:1px solid #bfdbfe;"></div> 2A Second AC</div>
+              <div class="legend-item"><div class="legend-color-box" style="background:#e0f2fe; border:1px solid #bae6fd;"></div> 3A Third AC</div>
+              <div class="legend-item"><div class="legend-color-box" style="background:#f0fdf4; border:1px solid #bbf7d0;"></div> SL Sleeper</div>
+              <div class="legend-item"><div class="legend-color-box" style="background:#fdf2f8; border:1px solid #fbcfe8;"></div> PC Pantry</div>
+              <div class="legend-item"><div class="legend-color-box" style="background:#f1f5f9; border:1px solid #cbd5e1;"></div> General / Guard</div>
+            </div>
+          </div>
+        `;
+      }
+
+      const reversalHtml = train.hasReversal && train.reversalStations?.length
+        ? `<span style="background:#fef3c7; color:#92400e; font-size:0.78rem; font-weight:700; padding:2px 8px; border-radius:4px;">Direction Reversal at: ${train.reversalStations.join(', ')}</span>`
+        : '';
+
+      area.innerHTML = `
+        <!-- Train Summary Header -->
+        <div style="background:#ffffff; border-radius:var(--radius-lg); border:1px solid var(--border-light); padding:28px; box-shadow:var(--shadow-sm); margin-bottom:24px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">
+            <div>
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                <span class="train-number" style="font-size:1.3rem;">${train.number}</span>
+                <h2 style="font-family:'Outfit'; font-size:1.7rem; margin:0;">${train.name}</h2>
+              </div>
+              <p style="color:var(--text-muted); font-size:1.05rem;">
+                ${train.source?.name} (${train.source?.code}) ➔ ${train.destination?.name} (${train.destination?.code})
+              </p>
+            </div>
+
+            <div style="display:flex; gap:8px; align-items:center;">
+              <a href="live.html?trainNumber=${train.number}" class="btn-card-action primary">
+                <span>🔴 Spot Live Status</span>
+              </a>
+              ${train.returnTrain ? `
+                <button onclick="quickLoadTrain('${train.returnTrain}')" class="btn-card-action">
+                  <span>🔄 Return Train (${train.returnTrain})</span>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+
+          <!-- Quick Stats Grid -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:14px; margin-top:20px; padding-top:16px; border-top:1px solid var(--border-subtle);">
+            <div>
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Distance</div>
+              <strong style="font-size:1.1rem;">${train.distance || 0} km</strong>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Duration</div>
+              <strong style="font-size:1.1rem;">${Math.floor((train.duration || 0) / 60)}h ${(train.duration || 0) % 60}m</strong>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Avg Speed</div>
+              <strong style="font-size:1.1rem;">${train.avgSpeed || 'N/A'} km/h</strong>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Total Halts</div>
+              <strong style="font-size:1.1rem;">${train.totalHalts || route.length} stops</strong>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Classes</div>
+              <strong style="font-size:1rem; color:var(--railway-blue);">${(train.classes || []).join(', ') || 'SL, 3A, 2A'}</strong>
+            </div>
+          </div>
+          <div style="margin-top:12px;">${reversalHtml}</div>
+        </div>
+
+        ${coachBoxesHtml}
+
+        <!-- Timetable Table -->
+        <div style="background:#ffffff; border-radius:var(--radius-lg); border:1px solid var(--border-light); padding:28px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-family:'Outfit'; font-size:1.3rem; margin-bottom:16px;">
+            Full Route Timetable (${route.length} Halts)
+          </h3>
+          <div class="modern-table-wrap">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Seq</th>
+                  <th>Station Name</th>
+                  <th>Code</th>
+                  <th>Arrival</th>
+                  <th>Departure</th>
+                  <th>Halt</th>
+                  <th>Platform</th>
+                  <th>Day</th>
+                  <th>Distance</th>
+                  <th>Speed to Next</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${route.map((st, i) => `
+                  <tr>
+                    <td><strong>#${st.sequence || i + 1}</strong></td>
+                    <td><strong>${st.station?.name || 'N/A'}</strong> ${st.isReversal ? '<span style="color:#d97706; font-size:0.75rem;">(Reversal)</span>' : ''}</td>
+                    <td><span class="station-code-badge">${st.station?.code || 'N/A'}</span></td>
+                    <td>${st.arrival || 'Source'}</td>
+                    <td>${st.departure || 'Dest'}</td>
+                    <td>${st.arrival && st.departure ? calculateHalt(st.arrival, st.departure) : '-'}</td>
+                    <td><span class="platform-pill">PF ${st.platform || '1'}</span></td>
+                    <td>Day ${st.departureDay || st.arrivalDay || 1}</td>
+                    <td>${st.distance != null ? `${st.distance} km` : '-'}</td>
+                    <td>${st.speedToNextStationKmph ? `${st.speedToNextStationKmph} km/h` : '-'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function calculateHalt(arr, dep) {
+      if (!arr || !dep || arr === "Source" || dep === "Dest") return "-";
+      const [ah, am] = arr.split(":").map(Number);
+      const [dh, dm] = dep.split(":").map(Number);
+      const diff = (dh * 60 + dm) - (ah * 60 + am);
+      return diff > 0 ? `${diff} min` : "-";
+    }
+  </script>
+</body>
+</html>

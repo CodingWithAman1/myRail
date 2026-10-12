@@ -1,45 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyRail</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Train Running Status - MyRail</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="./resource/logo.png">
 </head>
 <body>
-    <header>   
-        <img src="./resource/logo.png" alt="MyRail Logo" class="logo" onclick="window.location.href='index.html'">
-        <DIV ID="main_clock">
-        <p style="margin-right: 20px;"> IST </p>
-        <div id="clock"> 00:00:00 AM</div>
-        </DIV>  
-        <nav id="home_nav">
-                <a href="index.html" >Home</a>
-                <a href="live.html">Live Status</a>
-                <a href="trains.html">Trains b/w Stations</a>
-               <a href="contact.html">Contact</a>
-               
-        </nav>
-        
-    </header>
-    <main>
-        <div id="train_live">
-                <h2>Live Train Status</h2>
-                <p>Enter the train number to get the live status of the train.</p>
-        <form id="searchForm">
-            <label for="trainNumber">Enter Train Number:</label>
-            <input type="text" id="trainNumber" name="trainNumber" placeholder="e.g., 12345" required>
-            <label for="startDate">Enter Start Date:</label>
-            <input type="text" id="startDate" name="startDate" placeholder="e.g., 01-01-2023" required>
-            <button type="submit" id="submitBtn">Get Train Details</button>
-        </form>
-        <div id="trainLive" aria-live="polite"></div>
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo-container">
+      <img src="./resource/logo.png" alt="MyRail Logo" class="logo">
+      <div class="brand-text">
+        <div class="brand-title">My<span>Rail</span></div>
+        <div class="brand-subtitle">Indian Railway Portal</div>
+      </div>
+    </a>
+
+    <div id="main_clock">
+      <span class="live-pulse-dot"></span>
+      <span>IST:</span>
+      <div id="clock">--:--:--</div>
     </div>
-    </main>
-    <footer>
-        <p>&copy; 2026 MyRail. All rights reserved. Made with love just to serve! ❤️</p>
-    </footer>
-    <script src="app2.js"></script>
-    <script src="script.js"></script>
+
+    <nav id="home_nav">
+      <a href="index.html">🏠 Home</a>
+      <a href="live.html" class="active">🔴 Live Status</a>
+      <a href="trains.html">🔄 Trains b/w Stations</a>
+      <a href="schedule.html">📋 Schedule & Coach</a>
+      <a href="contact.html">📞 Support & NTES</a>
+    </nav>
+
+    <button class="nav-toggle-btn" id="navToggle" aria-label="Toggle Navigation">☰</button>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div style="margin-bottom:28px;">
+      <h1 style="font-family:'Outfit'; font-size:2.2rem; font-weight:800; margin-bottom:8px;">
+        Live Train Running Status & GPS Spotter
+      </h1>
+      <p style="color:var(--text-muted); font-size:1.05rem;">
+        Track exact current train location, delays, platform numbers, and passed halts in real-time.
+      </p>
+    </div>
+
+    <!-- Live Search Card -->
+    <div class="search-hub-card" style="margin-bottom:28px;">
+      <div style="padding:24px 28px;">
+        <form id="searchForm" style="display:grid; grid-template-columns: 2fr 1fr 180px; gap:14px; align-items:flex-end;">
+          <div class="input-field-group">
+            <label for="trainNumber">Train Number or Name:</label>
+            <div class="input-with-icon">
+              <span class="field-icon">🚆</span>
+              <input type="text" id="trainNumber" name="trainNumber" class="custom-input" placeholder="e.g. 12919 or 22436" required>
+            </div>
+          </div>
+
+          <div class="input-field-group">
+            <label for="startDate">Journey Date:</label>
+            <div class="input-with-icon">
+              <span class="field-icon">📅</span>
+              <input type="date" id="startDate" name="startDate" class="custom-input" style="padding-left:38px;">
+            </div>
+          </div>
+
+          <div>
+            <button type="submit" class="btn-primary" id="submitBtn">
+              <span>Spot Train</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Quick Spot Chips -->
+        <div class="popular-chips-bar" style="margin-top:16px; padding-top:14px;">
+          <span class="chips-label">Quick Spot:</span>
+          <span class="train-chip" onclick="quickSpot('12919')">🚆 12919 Malwa SF</span>
+          <span class="train-chip" onclick="quickSpot('22436')">⚡ 22436 Vande Bharat</span>
+          <span class="train-chip" onclick="quickSpot('12301')">👑 12301 Rajdhani Exp</span>
+          <span class="train-chip" onclick="quickSpot('12004')">🚄 12004 Shatabdi Exp</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Results Output -->
+    <div id="trainLive" aria-live="polite"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p>&copy; 2026 <strong>MyRail</strong>. Developed with ❤️ by <strong>CodingWithAman1</strong>.</p>
+        <p style="font-size:0.78rem; color:#64748b; margin-top:4px;">Real-time GPS tracking powered by RailRadar.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="live.html">Live Status</a>
+        <a href="trains.html">Trains</a>
+        <a href="schedule.html">Timetable</a>
+        <a href="contact.html">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="app2.js"></script>
+  <script>
+    function quickSpot(tn) {
+      document.getElementById("trainNumber").value = tn;
+      const form = document.getElementById("searchForm");
+      if (form) form.dispatchEvent(new Event("submit"));
+    }
+  </script>
 </body>
 </html>

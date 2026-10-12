@@ -1,46 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyRail</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyRail - Modern Indian Railway Portal</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="./resource/logo.png">
 </head>
 <body>
-    <header>   
-        <img src="./resource/logo.png" alt="MyRail Logo" class="logo" onclick="window.location.href='index.html'">
-        <DIV ID="main_clock">
-        <p style="margin-right: 20px;"> IST </p>
-        <div id="clock"> 00:00:00 AM</div>
-        </DIV>  
-        <nav id="home_nav">
-                <a href="index.html" >Home</a>
-                <a href="live.html">Live Status</a>
-               
-               <a href="trains.html">Trains b/w Stations</a>
-               <a href="contact.html">Contact</a>
-        </nav>
-        
-    </header>
-    <main>
-    <div id="banner">
-        <img src="./resource/MyRail banner.png" alt="Railway Image" class="main-image">
-        
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo-container">
+      <img src="./resource/logo.png" alt="MyRail Logo" class="logo">
+      <div class="brand-text">
+        <div class="brand-title">My<span>Rail</span></div>
+        <div class="brand-subtitle">Indian Railway Portal</div>
+      </div>
+    </a>
+
+    <div id="main_clock">
+      <span class="live-pulse-dot"></span>
+      <span>IST:</span>
+      <div id="clock">--:--:--</div>
     </div>
-    
-    <div id="train_details">
-        <form id="searchForm">
-            <label for="trainNumber">Enter Train Number:</label>
-            <input type="text" id="trainNumber" name="trainNumber" placeholder="e.g., 12345" required>
-            <button type="submit" id="submitBtn">Get Train Details</button>
-        </form>
-        <div id="trainResult" aria-live="polite"></div>
+
+    <nav id="home_nav">
+      <a href="index.html" class="active">🏠 Home</a>
+      <a href="live.html">🔴 Live Status</a>
+      <a href="trains.html">🔄 Trains b/w Stations</a>
+      <a href="schedule.html">📋 Schedule & Coach</a>
+      <a href="contact.html">📞 Support & NTES</a>
+    </nav>
+
+    <button class="nav-toggle-btn" id="navToggle" aria-label="Toggle Navigation">☰</button>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+      <div class="hero-header">
+        <div class="hero-badge">
+          <span>⚡ Live Indian Railway Network</span>
+        </div>
+        <h1>Find Trains, Track Live GPS & Check Timetables</h1>
+        <p>
+          Real-time train running status, instant station-to-station route finder, coach position layouts, and verified railway enquiries.
+        </p>
+      </div>
+
+      <!-- Search Hub Card -->
+      <div class="search-hub-card">
+        <!-- Tabs -->
+        <div class="hub-tabs">
+          <button class="hub-tab active" data-target="tabBetween">
+            <span>🔄 Trains b/w Stations</span>
+          </button>
+          <button class="hub-tab" data-target="tabLive">
+            <span>🔴 Spot Live Train</span>
+          </button>
+          <button class="hub-tab" data-target="tabSchedule">
+            <span>📋 Schedule & Coach</span>
+          </button>
+          <button class="hub-tab" data-target="tabPnr">
+            <span>🎟️ PNR Enquiry</span>
+          </button>
+        </div>
+
+        <!-- Tab 1: Trains Between Stations -->
+        <div class="tab-pane active" id="tabBetween">
+          <form id="formBetweenStations">
+            <div class="search-form-grid">
+              <!-- From Station -->
+              <div class="input-field-group">
+                <label for="hubFromStation">Departure Station (From):</label>
+                <div class="input-with-icon">
+                  <span class="field-icon">🚉</span>
+                  <input type="text" id="hubFromStation" class="custom-input" placeholder="e.g. Ujjain or UJN" required>
+                </div>
+              </div>
+
+              <!-- Swap Button -->
+              <div class="swap-btn-wrap">
+                <button type="button" class="btn-swap" id="hubSwapBtn" title="Swap Stations">⇄</button>
+              </div>
+
+              <!-- To Station -->
+              <div class="input-field-group">
+                <label for="hubToStation">Arrival Station (To):</label>
+                <div class="input-with-icon">
+                  <span class="field-icon">📍</span>
+                  <input type="text" id="hubToStation" class="custom-input" placeholder="e.g. Indore or INDB" required>
+                </div>
+              </div>
+
+              <!-- Date Picker -->
+              <div class="input-field-group">
+                <label for="hubTravelDate">Journey Date:</label>
+                <div class="input-with-icon">
+                  <span class="field-icon">📅</span>
+                  <input type="date" id="hubTravelDate" class="custom-input" style="padding-left:38px;" required>
+                </div>
+              </div>
+
+              <!-- Submit -->
+              <div class="submit-btn-wrap">
+                <button type="submit" class="btn-primary" id="hubSearchBtn">
+                  <span>Search Trains</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Date Presets -->
+            <div class="quick-date-chips">
+              <span style="font-size:0.78rem; color:var(--text-muted); align-self:center;">Quick Select:</span>
+              <button type="button" class="date-chip active" data-days="0">Today</button>
+              <button type="button" class="date-chip" data-days="1">Tomorrow</button>
+              <button type="button" class="date-chip" data-days="2">Day After</button>
+            </div>
+          </form>
+
+          <!-- Recent Searches -->
+          <div class="popular-chips-bar" id="recentSearchesBar" style="display:none;">
+            <span class="chips-label">Recent Searches:</span>
+            <div class="recent-chips-wrap" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Spot Live Train -->
+        <div class="tab-pane" id="tabLive">
+          <form id="liveSearchForm" style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:14px; align-items:flex-end;">
+            <div class="input-field-group">
+              <label for="liveTrainNumber">Enter Train Number or Name:</label>
+              <div class="input-with-icon">
+                <span class="field-icon">🚆</span>
+                <input type="text" id="liveTrainNumber" class="custom-input" placeholder="e.g. 12919 or Malwa SF" required>
+              </div>
+            </div>
+
+            <div class="input-field-group">
+              <label for="liveStartDate">Journey Start Date:</label>
+              <div class="input-with-icon">
+                <span class="field-icon">📅</span>
+                <input type="date" id="liveStartDate" class="custom-input" style="padding-left:38px;">
+              </div>
+            </div>
+
+            <div>
+              <button type="submit" class="btn-primary">
+                <span>Spot Live Status</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Popular Trains -->
+          <div class="popular-chips-bar">
+            <span class="chips-label">Quick Spot:</span>
+            <span class="train-chip" data-train="12919">🚆 12919 Malwa SF</span>
+            <span class="train-chip" data-train="22436">⚡ 22436 Vande Bharat</span>
+            <span class="train-chip" data-train="12301">👑 12301 Rajdhani Exp</span>
+            <span class="train-chip" data-train="12004">🚄 12004 Shatabdi Exp</span>
+          </div>
+        </div>
+
+        <!-- Tab 3: Train Schedule & Coach -->
+        <div class="tab-pane" id="tabSchedule">
+          <form id="scheduleSearchForm" style="display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap;">
+            <div class="input-field-group" style="flex:1; min-width:280px;">
+              <label for="scheduleTrainNumber">Enter Train Number:</label>
+              <div class="input-with-icon">
+                <span class="field-icon">📋</span>
+                <input type="text" id="scheduleTrainNumber" class="custom-input" placeholder="e.g. 12919 or 22436" required>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary" style="width:auto; padding:13px 28px;">
+              <span>View Route & Coach Rake</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Tab 4: PNR Enquiry -->
+        <div class="tab-pane" id="tabPnr">
+          <form id="pnrSearchForm" style="display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap;">
+            <div class="input-field-group" style="flex:1; min-width:280px;">
+              <label for="pnrNumber">Enter 10-Digit PNR Number:</label>
+              <div class="input-with-icon">
+                <span class="field-icon">🎟️</span>
+                <input type="text" id="pnrNumber" class="custom-input" placeholder="e.g. 2451893420" maxlength="10" required>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary" style="width:auto; padding:13px 28px;">
+              <span>Check PNR Status</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Area -->
+    <div id="hubResultsArea" aria-live="polite"></div>
+
+    <!-- Feature Highlights -->
+    <section class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-box">📡</div>
+        <h3>Live GPS Radar</h3>
+        <p>Real-time location, platform numbers, accurate delays, and upcoming halt tracking directly via RailRadar GPS satellite feeds.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-box">⚡</div>
+        <h3>8,000+ Stations</h3>
+        <p>Instant autocomplete for all Indian Railway junction stations, halts, and terminals with lightning-fast code lookups.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-box">🚃</div>
+        <h3>Coach Composition</h3>
+        <p>Visual rake positions showing exact arrangement of Locomotive, General, Sleeper, 3A, 2A, 1A, and Pantry coaches.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-box">🎟️</div>
+        <h3>1-Click Booking</h3>
+        <p>Seamlessly redirect to ConfirmTkt and IRCTC with pre-filled station codes and travel dates for hassle-free reservations.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <p>&copy; 2026 <strong>MyRail</strong>. Developed with ❤️ by <strong>CodingWithAman1</strong>.</p>
+        <p style="font-size:0.78rem; color:#64748b; margin-top:4px;">Empowering passengers with accurate Indian Railways travel information.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="live.html">Live Status</a>
+        <a href="trains.html">Trains b/w Stations</a>
+        <a href="schedule.html">Coach Position</a>
+        <a href="contact.html">Support</a>
+      </div>
     </div>
-    </main>
-    <footer>
-        <p>&copy; 2026 MyRail. All rights reserved. Made with love just to serve! ❤️</p>
-    </footer>
-    <script src="app.js"></script>
-    <script src="script.js"></script>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
