@@ -309,6 +309,13 @@ app.get("/api/pnr/:pnr", (req, res) => {
   });
 });
 
+// Public config endpoint for map keys
+app.get("/api/config", (req, res) => {
+  res.json({
+    cartoApiKey: process.env.CARTO_API_KEY || "cb1_4hmw_1_fe7247cc1da86e7d4ee8f2ad",
+  });
+});
+
 // Health check endpoint
 app.get("/api/health", (req, res) => {
   res.json({

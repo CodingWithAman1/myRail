@@ -342,12 +342,37 @@ function initLeafletTrainMap(liveData) {
     zoomControl: true,
   });
 
-  // Sleek CartoDB Voyager Tile Layer
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+  // User CARTO Basemaps API Key
+  const CARTO_API_KEY = "cb1_4hmw_1_fe7247cc1da86e7d4ee8f2ad";
+
+  // CARTO Tile Layers authenticated with API key
+  const voyagerLayer = L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`, {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: "abcd",
     maxZoom: 19,
-  }).addTo(liveMapInstance);
+  });
+
+  const positronLayer = L.tileLayer(`https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`, {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: "abcd",
+    maxZoom: 19,
+  });
+
+  const darkMatterLayer = L.tileLayer(`https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`, {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: "abcd",
+    maxZoom: 19,
+  });
+
+  // Default to Voyager
+  voyagerLayer.addTo(liveMapInstance);
+
+  // Basemap switcher control
+  L.control.layers({
+    "🗺️ CARTO Voyager": voyagerLayer,
+    "☀️ CARTO Positron (Light)": positronLayer,
+    "🌙 CARTO Dark Matter (Radar)": darkMatterLayer
+  }, null, { position: "topright" }).addTo(liveMapInstance);
 
   if (stationsWithCoords.length === 0) {
     // Add banner on map if coordinates unavailable
