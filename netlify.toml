@@ -1,7 +1,65 @@
 [build]
-command = "npm install"
-functions = "netlify/functions"
-publish = "."
+  command = "npm install"
+  functions = "netlify/functions"
+  publish = "."
 
 [dev]
-functions = "netlify/functions"
+  functions = "netlify/functions"
+
+[functions]
+  included_files = ["stationDatabase.json"]
+
+# Explicit Redirects from Express-style /api/* to Netlify Functions
+[[redirects]]
+  from = "/api/trains-between"
+  to = "/.netlify/functions/trains-between"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/trains/between/:from/:to"
+  to = "/.netlify/functions/trains-between?from=:from&to=:to"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/train-live"
+  to = "/.netlify/functions/train-live"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/train/:trainNumber/live"
+  to = "/.netlify/functions/train-live?trainNumber=:trainNumber"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/train/:trainNumber"
+  to = "/.netlify/functions/train?trainNumber=:trainNumber"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/train"
+  to = "/.netlify/functions/train"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/stations/search"
+  to = "/.netlify/functions/stations-search"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/pnr/:pnr"
+  to = "/.netlify/functions/pnr?pnr=:pnr"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/config"
+  to = "/.netlify/functions/config"
+  status = 200
+  force = true

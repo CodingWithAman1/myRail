@@ -148,8 +148,7 @@ function initHubForms() {
         let url = `/api/trains-between?from=${encodeURIComponent(fromCode)}&to=${encodeURIComponent(toCode)}`;
         if (travelDate) url += `&date=${encodeURIComponent(travelDate)}`;
 
-        const res = await fetch(url);
-        const data = await res.json();
+        const { res, data } = await window.apiFetch(url);
 
         if (!res.ok || !data.success) {
           throw new Error(data.error || "Failed to fetch trains");
@@ -210,8 +209,7 @@ function initHubForms() {
       pnrResult.scrollIntoView({ behavior: "smooth" });
 
       try {
-        const res = await fetch(`/api/pnr/${encodeURIComponent(pnr)}`);
-        const data = await res.json();
+        const { res, data } = await window.apiFetch(`/api/pnr/${encodeURIComponent(pnr)}`);
         if (!res.ok || !data.success) throw new Error(data.error || "PNR not found");
 
         renderPnrCard(data.data);
@@ -346,8 +344,7 @@ window.toggleRouteHalts = async function(trainNumber, index) {
   panel.innerHTML = `<div class="spinner-wrap" style="padding:16px;"><div class="railway-spinner" style="width:28px; height:28px;"></div></div>`;
 
   try {
-    const res = await fetch(`/api/train/${encodeURIComponent(trainNumber)}`);
-    const data = await res.json();
+    const { res, data } = await window.apiFetch(`/api/train/${encodeURIComponent(trainNumber)}`);
 
     if (!res.ok || !data.success) throw new Error(data.error || "Could not load halts");
 

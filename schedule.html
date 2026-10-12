@@ -123,8 +123,7 @@
       area.scrollIntoView({ behavior: "smooth" });
 
       try {
-        const res = await fetch(`/api/train/${encodeURIComponent(trainNumber)}`);
-        const data = await res.json();
+        const { res, data } = await window.apiFetch(`/api/train/${encodeURIComponent(trainNumber)}`);
         if (!res.ok || !data.success) throw new Error(data.error || "Train not found");
 
         renderScheduleDashboard(data.data);

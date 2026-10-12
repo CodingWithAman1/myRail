@@ -66,8 +66,7 @@ async function loadLiveTrainStatus(trainNumber, date) {
     let url = `/api/train-live?trainNumber=${encodeURIComponent(trainNumber)}`;
     if (date) url += `&date=${encodeURIComponent(date)}`;
 
-    const res = await fetch(url);
-    const data = await res.json();
+    const { res, data } = await window.apiFetch(url);
 
     if (!res.ok || !data.success) {
       throw new Error(data.error || "Live status unavailable for this train.");

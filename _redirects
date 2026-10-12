@@ -1,0 +1,9 @@
+/api/trains-between  /.netlify/functions/trains-between  200!
+/api/trains/between/:from/:to  /.netlify/functions/trains-between?from=:from&to=:to  200!
+/api/train-live  /.netlify/functions/train-live  200!
+/api/train/:trainNumber/live  /.netlify/functions/train-live?trainNumber=:trainNumber  200!
+/api/train/:trainNumber  /.netlify/functions/train?trainNumber=:trainNumber  200!
+/api/train  /.netlify/functions/train  200!
+/api/stations/search  /.netlify/functions/stations-search  200!
+/api/pnr/:pnr  /.netlify/functions/pnr?pnr=:pnr  200!
+/api/config  /.netlify/functions/config  200!

@@ -121,8 +121,7 @@ async function fetchTrainsBetween(fromCode, toCode, date) {
     let url = `/api/trains-between?from=${encodeURIComponent(fromCode)}&to=${encodeURIComponent(toCode)}`;
     if (date) url += `&date=${encodeURIComponent(date)}`;
 
-    const res = await fetch(url);
-    const data = await res.json();
+    const { res, data } = await window.apiFetch(url);
 
     if (!res.ok || !data.success) {
       throw new Error(data.error || "Unable to find trains for this route.");
